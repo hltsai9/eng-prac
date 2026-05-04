@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LLM Embeddings — Learning Record</title>
+<meta name="description" content="A study record on LLM embeddings: 3-level English passages, vocabulary mapping, and practice rounds with corrections.">
+<meta name="record-date" content="2026-05-03">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="../index.html">English Learning Record · <span>LLM Embeddings</span></a>
+    <div class="nav-links">
+      <a class="back" href="../index.html">← All records</a>
+      <a href="#intro">Intro</a>
+      <a href="#passages">Passages</a>
+      <a href="#vocabulary">Vocabulary</a>
+      <a href="#practice">Practice</a>
+      <a href="#summary">Summary</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <h1>LLM Embeddings — A Personal Study Record</h1>
+  <p class="subtitle">Three reading levels · vocabulary mapping · practice and revision</p>
+  <p class="meta">Created on <time datetime="2026-05-03">May 3, 2026</time></p>
+</header>
+
+<!-- ============ SECTION 1 ============ -->
+<section id="intro">
+  <div class="section-label">Section 01</div>
+  <h2>主題簡介：LLM Embeddings</h2>
+  <article class="card prose" lang="zh-Hant">
+    <p>LLM 嵌入（embeddings）是大型語言模型理解語言的核心技術。它將文字轉換成高維度的數字向量，讓電腦能以數學方式計算詞語之間的語意關聯。意思相近的詞，向量位置也相近。</p>
+    <p>這項技術廣泛應用於語意搜尋、推薦系統與聊天機器人，是現代人工智慧運作的基礎。透過嵌入，機器不再只是比對字面，而是真正「理解」文字背後的意義。</p>
+  </article>
+</section>
+
+<!-- ============ SECTION 2 ============ -->
+<section id="passages">
+  <div class="section-label">Section 02</div>
+  <h2>Three-Level English Passages</h2>
+  <div class="tabs">
+    <div class="tab-buttons" role="tablist">
+      <button class="tab-button active" data-tab="c1" role="tab"><span class="level-tag">C1</span>Advanced</button>
+      <button class="tab-button" data-tab="b2" role="tab"><span class="level-tag">B2</span>Upper-Intermediate</button>
+      <button class="tab-button" data-tab="b1" role="tab"><span class="level-tag">B1</span>Intermediate</button>
+    </div>
+
+    <div class="tab-panel active card" id="tab-c1" data-level="C1 — Advanced">
+      <p class="prose" style="margin:0;">Have you ever wondered how a language model actually grasps what words mean? The answer lies in something called embeddings. Essentially, embeddings convert words into high-dimensional numerical vectors, allowing the model to capture subtle semantic relationships mathematically. Words with similar meanings end up clustered together in this vector space, while unrelated ones drift apart. This breakthrough underpins a wide range of applications, from semantic search and recommendation engines to sophisticated chatbots. Rather than merely matching characters on the surface, the machine genuinely interprets the underlying meaning. It's a remarkably elegant solution that quietly powers much of today's AI landscape.</p>
+    </div>
+
+    <div class="tab-panel card" id="tab-b2" data-level="B2 — Upper-Intermediate">
+      <p class="prose" style="margin:0;">Have you ever wondered how a language model actually understands what words mean? The answer is something called embeddings. Basically, embeddings turn words into long lists of numbers, which lets the model recognise meaning through maths. Words with similar meanings are placed close together in this number space, while unrelated words sit far apart. This idea supports many useful tools, including semantic search, recommendation systems, and chatbots. Instead of just matching letters on the surface, the machine can actually work out what the text really means. It's a clever solution that drives a huge part of modern AI today.</p>
+    </div>
+
+    <div class="tab-panel card" id="tab-b1" data-level="B1 — Intermediate">
+      <p class="prose" style="margin:0;">Have you ever thought about how a language model knows what words mean? The answer is something called embeddings. In simple terms, embeddings change words into long lists of numbers, so the model can find meaning using maths. Words that mean similar things are put close together in this number space, and words that are not related stay far apart. This idea helps build many useful tools, like search engines, recommendation apps, and chatbots. The machine does not just match letters. It tries to understand what the words really mean. It is a smart idea behind many AI tools today.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SECTION 3 ============ -->
+<section id="vocabulary">
+  <div class="section-label">Section 03</div>
+  <h2>Vocabulary Comparison Table</h2>
+  <div class="table-wrap">
+    <table class="vocab">
+      <thead>
+        <tr>
+          <th scope="col">Narrative Step</th>
+          <th scope="col">C1</th>
+          <th scope="col">B2</th>
+          <th scope="col">B1</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Hook question</td>
+          <td>Have you ever wondered… grasps</td>
+          <td>Have you ever wondered… understands</td>
+          <td>Have you ever thought about… knows</td>
+        </tr>
+        <tr>
+          <td>Topic reveal</td>
+          <td>The answer lies in</td>
+          <td>The answer is</td>
+          <td>The answer is</td>
+        </tr>
+        <tr>
+          <td>Definition</td>
+          <td>convert / high-dimensional numerical vectors</td>
+          <td>turn / long lists of numbers</td>
+          <td>change / long lists of numbers</td>
+        </tr>
+        <tr>
+          <td>Mechanism</td>
+          <td>clustered together / drift apart</td>
+          <td>placed close together / sit far apart</td>
+          <td>put close together / stay far apart</td>
+        </tr>
+        <tr>
+          <td>Applications</td>
+          <td>underpins a wide range of</td>
+          <td>supports many useful tools</td>
+          <td>helps build many useful tools</td>
+        </tr>
+        <tr>
+          <td>Closing insight</td>
+          <td>a remarkably elegant solution</td>
+          <td>a clever solution</td>
+          <td>a smart idea</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ============ SECTION 4 ============ -->
+<section id="practice">
+  <div class="section-label">Section 04</div>
+  <h2>My Practice Responses &amp; Polished Versions</h2>
+
+  <!-- Round 1 -->
+  <article class="round">
+    <div class="round-header">
+      <span class="round-number">Round 1</span>
+    </div>
+    <div class="round-prompt">
+      <strong>Prompt</strong>
+      Imagine you're explaining LLM embeddings to a curious friend over coffee. Use at least four target expressions from the passages.
+    </div>
+    <div class="compare">
+      <div class="compare-col mine">
+        <div class="compare-label">My Response</div>
+        <p class="compare-text">Have you ever wondered how <mark>a LLM</mark> grasps what words mean? The answer lies in something called embeddings. The LLM turns words into numerical vectors which encode semantic relationships. Words with similar meanings <mark>clustered together</mark> in the vector space, while others drift apart. This helps build a wide range of applications such as <mark>search engine</mark>, recommendation systems, and chatbots. Instead of just matching <mark>numbers</mark> on the surface, the LLM actually knows <mark>the mean</mark> behind words. It is a clever solution that drives a huge part of <mark>AI today</mark>.</p>
+      </div>
+      <div class="compare-col polished">
+        <div class="compare-label">Polished Version</div>
+        <p class="compare-text">Have you ever wondered how <mark>an LLM</mark> grasps what words mean? The answer lies in something called embeddings. The LLM turns words into numerical vectors which encode semantic relationships. Words with similar meanings <mark>are clustered together</mark> in the vector space, while others drift apart. This helps build a wide range of applications such as <mark>search engines</mark>, recommendation systems, and chatbots. Instead of just matching <mark>characters</mark> on the surface, the LLM actually understands <mark>the meaning</mark> behind words. It is a clever solution that drives a huge part of <mark>the AI landscape today</mark>.</p>
+      </div>
+    </div>
+    <div class="corrections">
+      <h4>Key Corrections</h4>
+      <ul>
+        <li>Article: <code>a LLM</code> → <code>an LLM</code> (vowel sound rule)</li>
+        <li>Verb tense: <code>clustered together</code> → <code>are clustered together</code> (passive present)</li>
+        <li>Plural: <code>search engine</code> → <code>search engines</code></li>
+        <li>Logic: <code>matching numbers</code> → <code>matching characters</code> (numbers are what embeddings DO use)</li>
+        <li>Noun form: <code>the mean</code> → <code>the meaning</code></li>
+        <li>Naturalness: <code>a huge part of AI today</code> → <code>a huge part of the AI landscape today</code></li>
+      </ul>
+      <span class="badge b2">Level: B2+ reaching toward C1</span>
+    </div>
+  </article>
+
+  <!-- Round 2 -->
+  <article class="round">
+    <div class="round-header">
+      <span class="round-number">Round 2</span>
+    </div>
+    <div class="round-prompt">
+      <strong>Prompt</strong>
+      A friend pushes back: "Isn't this just a fancy dictionary?" Respond using at least two C1 expressions: <em>underpins, subtle semantic relationships, rather than merely, remarkably elegant, interprets the underlying meaning.</em>
+    </div>
+    <div class="compare">
+      <div class="compare-col mine">
+        <div class="compare-label">My Response</div>
+        <p class="compare-text">A word <mark>can mean differently</mark> based on context. With embeddings, the <mark>relationships of every word from the input can be formed</mark> through layers of computation. This breakthrough underpins a wide range of AI applications because it <mark>enables LLM</mark> to capture subtle semantic differences. Rather than merely looking words up, an LLM interprets the underlying meaning of words <mark>through maths</mark>.</p>
+      </div>
+      <div class="compare-col polished">
+        <div class="compare-label">Polished Version</div>
+        <p class="compare-text">A word <mark>can mean different things depending on context</mark>. With embeddings, the <mark>relationships between words in the input are built up</mark> through layers of computation. This breakthrough underpins a wide range of AI applications because it <mark>enables an LLM</mark> to capture subtle semantic differences. Rather than merely looking words up, an LLM interprets the underlying meaning of words <mark>mathematically</mark>.</p>
+      </div>
+    </div>
+    <div class="corrections">
+      <h4>Key Corrections</h4>
+      <ul>
+        <li>Adverb misuse: <code>can mean differently</code> → <code>can mean different things depending on context</code></li>
+        <li>Preposition + verb: <code>relationships of every word… can be formed</code> → <code>relationships between words… are built up</code></li>
+        <li>Article: <code>enables LLM</code> → <code>enables an LLM</code> (or <code>enables LLMs</code>)</li>
+        <li>Naturalness: <code>through maths</code> → <code>mathematically</code></li>
+      </ul>
+      <span class="badge c1">Level: Solid C1</span>
+    </div>
+  </article>
+
+  <!-- Round 3 -->
+  <article class="round">
+    <div class="round-header">
+      <span class="round-number">Round 3</span>
+    </div>
+    <div class="round-prompt">
+      <strong>Prompt</strong>
+      Give a complete 90-second spoken explanation covering what embeddings are, how they handle context, why they matter, and one open question — using at least six expressions from across the three passages.
+    </div>
+    <div class="compare">
+      <div class="compare-col mine">
+        <div class="compare-label">My Response</div>
+        <p class="compare-text">LLM embeddings enable an LLM to understand the meaning behind words. When processing words, an LLM turns words into numerical vectors with semantic relationships. Words that are similar cluster together, while unrelated words drift apart. <mark>If there were no embeddings, if an LLM was merely matching characters,</mark> a word in <mark>different context</mark> would be interpreted in the same way. <mark>Only when an LLM grasps semantic meanings correctly, it provides</mark> <mark>meaningful response</mark>. Have you ever wondered <mark>how were the embeddings generated</mark>?</p>
+      </div>
+      <div class="compare-col polished">
+        <div class="compare-label">Polished Version</div>
+        <p class="compare-text">LLM embeddings enable an LLM to understand the meaning behind words. When processing input, an LLM turns words into numerical vectors that encode semantic relationships. Words with similar meanings cluster together, while unrelated words drift apart. <mark>Without embeddings — if an LLM were merely matching characters —</mark> the same word in <mark>different contexts</mark> would be interpreted identically. <mark>Only when an LLM grasps semantic meaning correctly does it provide</mark> <mark>a meaningful response</mark>. Have you ever wondered <mark>how embeddings are actually generated</mark>?</p>
+      </div>
+    </div>
+    <div class="corrections">
+      <h4>Key Corrections</h4>
+      <ul>
+        <li>Conditional structure: stacked <code>if</code> clauses → combine with em-dash; use subjunctive <code>were</code> consistently</li>
+        <li>Plural: <code>in different context</code> → <code>in different contexts</code></li>
+        <li>Inversion after <code>Only when…</code>: <code>it provides</code> → <code>does it provide</code></li>
+        <li>Article: <code>meaningful response</code> → <code>a meaningful response</code></li>
+        <li>Embedded question word order: <code>how were the embeddings generated</code> → <code>how embeddings are generated</code></li>
+      </ul>
+      <span class="badge c1plus">Level: Strong C1, reaching toward C2</span>
+    </div>
+  </article>
+</section>
+
+<!-- ============ SECTION 5 — Summary ============ -->
+<footer class="summary" id="summary">
+  <div class="summary-card">
+    <div class="section-label">Progress Summary</div>
+    <h2>Growth Across Three Rounds</h2>
+    <ul class="summary-list">
+      <li><span class="round-tag">Round 1</span><span><span class="level-pill">B2+</span>minor article and plural slips</span></li>
+      <li><span class="round-tag">Round 2</span><span><span class="level-pill">C1</span>preposition and article fine-tuning</span></li>
+      <li><span class="round-tag">Round 3</span><span><span class="level-pill">C1+</span>ambitious structures (inversion, subjunctive, embedded questions)</span></li>
+    </ul>
+    <p class="summary-note">"Mistakes of ambition, not confusion. Next frontier: register variation toward C2."</p>
+  </div>
+</footer>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="19" x2="12" y2="5"></line>
+    <polyline points="5 12 12 5 19 12"></polyline>
+  </svg>
+</button>
+
+<script>
+  // Tabs
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabPanels = document.querySelectorAll('.tab-panel');
+  tabButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const target = btn.dataset.tab;
+      tabButtons.forEach(b => b.classList.toggle('active', b === btn));
+      tabPanels.forEach(p => p.classList.toggle('active', p.id === 'tab-' + target));
+    });
+  });
+
+  // Back to top
+  const backBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    backBtn.classList.toggle('visible', window.scrollY > 400);
+  });
+  backBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>

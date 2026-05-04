@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Learning Records</title>
+<meta name="description" content="A personal collection of English learning records — passages, vocabulary, and practice rounds with feedback.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html">English Learning Records · <span>Index</span></a>
+    <div class="nav-links">
+      <a href="#records">All records</a>
+      <a href="README.md">README</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <h1>English Learning Records</h1>
+  <p class="subtitle">A personal collection of topics, passages, and practice rounds.</p>
+</header>
+
+<section id="records" style="padding-top:24px;">
+  <div class="section-label" style="text-align:center;">Library</div>
+  <h2 style="text-align:center;">All Records</h2>
+
+  <div class="view-toggle-bar">
+    <div class="view-toggle" role="group" aria-label="Layout view">
+      <button class="view-btn active" data-view="grid" aria-label="Card view" aria-pressed="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+          <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+          <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+        </svg>
+        Cards
+      </button>
+      <button class="view-btn" data-view="list" aria-label="List view" aria-pressed="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <circle cx="4" cy="6" r="1.2"></circle>
+          <circle cx="4" cy="12" r="1.2"></circle>
+          <circle cx="4" cy="18" r="1.2"></circle>
+        </svg>
+        List
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       RECORDS LIST
+       To add a new record, insert a new <a class="record-card"> block
+       in this grid (newest first), then create a matching HTML file
+       under records/. See README.md for the prompt template.
+       ============================================================ -->
+  <div class="records-grid" id="recordsGrid">
+
+    <a class="record-card" href="records/llm-embeddings.html">
+      <span class="date"><time datetime="2026-05-03">May 3, 2026</time></span>
+      <h3 class="title">LLM Embeddings</h3>
+      <p class="chinese">LLM 嵌入</p>
+      <p class="summary">How language models grasp meaning by turning words into high-dimensional vectors that encode semantic relationships.</p>
+      <div class="tags">
+        <span class="tag">AI</span>
+        <span class="tag">C1 / B2 / B1</span>
+        <span class="tag">3 practice rounds</span>
+      </div>
+      <span class="open-arrow">Open record →</span>
+    </a>
+
+    <!-- ↑ insert new <a class="record-card"> blocks above this line ↑ -->
+  </div>
+</section>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="19" x2="12" y2="5"></line>
+    <polyline points="5 12 12 5 19 12"></polyline>
+  </svg>
+</button>
+
+<script>
+  // View toggle (cards / list) — persisted in localStorage
+  const grid = document.getElementById('recordsGrid');
+  const viewButtons = document.querySelectorAll('.view-btn');
+  const savedView = localStorage.getItem('recordsView') === 'list' ? 'list' : 'grid';
+  applyView(savedView);
+
+  viewButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.view;
+      applyView(mode);
+      localStorage.setItem('recordsView', mode);
+    });
+  });
+
+  function applyView(mode) {
+    grid.classList.toggle('list-view', mode === 'list');
+    viewButtons.forEach(b => {
+      const active = b.dataset.view === mode;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-pressed', String(active));
+    });
+  }
+
+  // Back to top
+  const backBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    backBtn.classList.toggle('visible', window.scrollY > 400);
+  });
+  backBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
