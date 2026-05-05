@@ -24,6 +24,11 @@ Open `index.html` directly in a browser (double-click or `file://`) — there is
 
 ## Adding a new record (in another Claude chat)
 
+This repo ships with a Claude Code skill at `.claude/skills/new-learning-record/SKILL.md`. Open a fresh Claude Code chat with this folder as the working directory and either:
+
+- **Use the skill**: type `/new-learning-record` (or just describe the topic — Claude will pick it up from the description). The skill knows the template, will ask for any missing content, and will create both the new record file and the listing card.
+- **Or paste the prompt below** — it produces the same result without relying on the skill, useful in non-Claude-Code chats.
+
 Open a fresh Claude Code chat with this folder as the working directory and paste the prompt below, replacing the bracketed placeholders with your topic content. Claude will read the existing record as a template, generate a new `records/<slug>.html`, and prepend a new card to `index.html`.
 
 ````markdown
