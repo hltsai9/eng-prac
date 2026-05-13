@@ -704,4 +704,619 @@ footer.summary {
   table.vocab thead th { position: static; background: #ddd; color: #000; }
   .round { page-break-inside: avoid; margin-bottom: 20px; }
   .records-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+  #habit-tracker { display: none !important; }
+}
+
+/* ============================================================
+   Habit tracker + pet of the month
+   ============================================================ */
+#habit-tracker {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 24px 8px;
+}
+.tracker-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1fr) minmax(300px, 1.2fr);
+  gap: 22px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* --- Pet card --- */
+.pet-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 26px 24px 22px;
+  background: linear-gradient(160deg, var(--bg-card) 0%, var(--accent-soft) 140%);
+}
+.pet-month-label {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-bottom: 6px;
+}
+.pet-stage {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 4px 0 10px;
+}
+.pet-container {
+  display: inline-block;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: bottom center;
+}
+.pet-container[data-stage="0"] { transform: scale(0.45); }
+.pet-container[data-stage="1"] { transform: scale(0.60); }
+.pet-container[data-stage="2"] { transform: scale(0.75); }
+.pet-container[data-stage="3"] { transform: scale(0.88); }
+.pet-container[data-stage="4"] { transform: scale(1.00); }
+.pet-container[data-stage="5"] { transform: scale(1.05); }
+.pet-container[data-stage="6"] { transform: scale(1.10); }
+.pet-container[data-stage="7"] { transform: scale(1.15); }
+
+.pet-svg {
+  width: 180px;
+  height: 180px;
+  display: block;
+  animation: pet-bob 3.2s ease-in-out infinite;
+}
+@keyframes pet-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+/* --- Cat SVG colors and animations --- */
+.cat-body, .cat-head, .cat-paw, .cat-ear { fill: #f0c89a; stroke: #b8895a; stroke-width: 2; }
+.cat-ear-inner { fill: #e8a4a4; }
+.cat-eye { fill: #1a1a1a; }
+.cat-eye-shine { fill: #fff; }
+.cat-nose { fill: #e8a4a4; }
+.cat-mouth { fill: none; stroke: #6b6b6b; stroke-width: 1.5; stroke-linecap: round; }
+.cat-whisker { stroke: #6b6b6b; stroke-width: 1.2; stroke-linecap: round; }
+.cat-stripe { stroke: #b8895a; stroke-width: 2; fill: none; stroke-linecap: round; }
+.cat-tail-path { fill: none; stroke: #b8895a; stroke-width: 13; stroke-linecap: round; }
+
+/* Tail wag */
+.cat-tail {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+  animation: cat-tail-wag 1.8s ease-in-out infinite;
+}
+@keyframes cat-tail-wag {
+  0%, 100% { transform: rotate(-12deg); }
+  50%      { transform: rotate(14deg); }
+}
+
+/* Blink */
+.cat-eyes {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cat-blink 5.5s infinite;
+}
+@keyframes cat-blink {
+  0%, 92%, 96.5%, 100% { transform: scaleY(1); }
+  94%                  { transform: scaleY(0.1); }
+}
+
+/* Stage-based feature visibility — all hidden by default */
+.cat-whiskers, .cat-stripes, .cat-crown, .cat-sparkles,
+.cat-glasses, .cat-wings, .cat-halo, .cat-extra-sparkles {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+/* Whiskers unlock at stage 2 */
+.pet-container[data-stage="2"] .cat-whiskers,
+.pet-container[data-stage="3"] .cat-whiskers,
+.pet-container[data-stage="4"] .cat-whiskers,
+.pet-container[data-stage="5"] .cat-whiskers,
+.pet-container[data-stage="6"] .cat-whiskers,
+.pet-container[data-stage="7"] .cat-whiskers { opacity: 1; }
+
+/* Stripes unlock at stage 3 */
+.pet-container[data-stage="3"] .cat-stripes,
+.pet-container[data-stage="4"] .cat-stripes,
+.pet-container[data-stage="5"] .cat-stripes,
+.pet-container[data-stage="6"] .cat-stripes,
+.pet-container[data-stage="7"] .cat-stripes { opacity: 1; }
+
+/* Crown + golden sparkles unlock at stage 4 */
+.pet-container[data-stage="4"] .cat-crown,
+.pet-container[data-stage="5"] .cat-crown,
+.pet-container[data-stage="6"] .cat-crown,
+.pet-container[data-stage="7"] .cat-crown,
+.pet-container[data-stage="4"] .cat-sparkles,
+.pet-container[data-stage="5"] .cat-sparkles,
+.pet-container[data-stage="6"] .cat-sparkles,
+.pet-container[data-stage="7"] .cat-sparkles { opacity: 1; }
+
+/* Glasses unlock at stage 5 */
+.pet-container[data-stage="5"] .cat-glasses,
+.pet-container[data-stage="6"] .cat-glasses,
+.pet-container[data-stage="7"] .cat-glasses { opacity: 1; }
+
+/* Wings unlock at stage 6 */
+.pet-container[data-stage="6"] .cat-wings,
+.pet-container[data-stage="7"] .cat-wings { opacity: 1; }
+
+/* Halo + pink sparkles unlock at stage 7 */
+.pet-container[data-stage="7"] .cat-halo,
+.pet-container[data-stage="7"] .cat-extra-sparkles { opacity: 1; }
+
+/* Stage 0 = sleeping eyes (replace with closed lines) */
+.pet-container[data-stage="0"] .cat-eyes { display: none; }
+.pet-container[data-stage="0"] .cat-zzz  { opacity: 1; }
+.cat-zzz { opacity: 0; transition: opacity 0.3s ease; }
+
+/* Sparkles twinkle (stage 4) */
+.cat-sparkles circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cat-twinkle 2s ease-in-out infinite;
+}
+.cat-sparkles circle:nth-child(2) { animation-delay: 0.6s; }
+.cat-sparkles circle:nth-child(3) { animation-delay: 1.2s; }
+@keyframes cat-twinkle {
+  0%, 100% { transform: scale(0.6); opacity: 0.4; }
+  50%      { transform: scale(1.2); opacity: 1; }
+}
+
+/* Extra pink sparkles twinkle (stage 7) */
+.cat-extra-sparkles circle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cat-twinkle 2.4s ease-in-out infinite;
+}
+.cat-extra-sparkles circle:nth-child(1) { animation-delay: 0.3s; }
+.cat-extra-sparkles circle:nth-child(2) { animation-delay: 0.9s; }
+.cat-extra-sparkles circle:nth-child(3) { animation-delay: 1.5s; }
+.cat-extra-sparkles circle:nth-child(4) { animation-delay: 2.1s; }
+
+/* Wings flap subtly (stage 6+) */
+.cat-wings {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: cat-wing-flap 2.6s ease-in-out infinite;
+}
+@keyframes cat-wing-flap {
+  0%, 100% { transform: scaleY(1)    scaleX(1); }
+  50%      { transform: scaleY(0.86) scaleX(0.96); }
+}
+
+/* Halo gently bobs and shimmers (stage 7) */
+.cat-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: cat-halo-bob 4s ease-in-out infinite;
+}
+@keyframes cat-halo-bob {
+  0%, 100% { transform: translateY(0)    scaleX(1);    opacity: 1;   }
+  50%      { transform: translateY(-2px) scaleX(0.94); opacity: 0.85;}
+}
+
+.pet-name {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 19px;
+  color: var(--accent-strong);
+  margin: 0 0 4px;
+  letter-spacing: -0.01em;
+}
+.pet-level {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  margin: 0 0 12px;
+  letter-spacing: 0.04em;
+}
+.pet-level .level-pill {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 9px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  margin-right: 6px;
+}
+.pet-message {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14.5px;
+  color: var(--text-muted);
+  margin: 0;
+  min-height: 2.6em;
+}
+.pet-progress {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-soft);
+  border-radius: 999px;
+  margin-top: 14px;
+  overflow: hidden;
+}
+.pet-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--secondary), var(--accent));
+  border-radius: 999px;
+  transition: width 0.8s ease;
+}
+.pet-progress-label {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  margin: 6px 0 0;
+}
+.pet-history-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: 0.02em;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s ease, gap 0.15s ease;
+}
+.pet-history-link:hover {
+  border-bottom-color: var(--accent);
+}
+
+/* --- Calendar card --- */
+.calendar-card { padding: 22px 24px; }
+.calendar-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.calendar-month {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--accent-strong);
+  letter-spacing: -0.01em;
+}
+.calendar-stats {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--secondary);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  margin-bottom: 6px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.calendar-weekdays span { text-align: center; }
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.day-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  border-radius: 8px;
+  background: var(--bg-soft);
+  position: relative;
+}
+.day-cell.empty { background: transparent; }
+.day-cell.future { color: #c0bba8; background: transparent; }
+.day-cell.practice {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(13, 79, 74, 0.25);
+}
+.day-cell.practice::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+}
+.day-cell.today {
+  outline: 2px solid var(--secondary);
+  outline-offset: -2px;
+}
+.day-cell.today:not(.practice) { color: var(--secondary); font-weight: 700; }
+
+.calendar-footnote {
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 14px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.calendar-footnote .swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.calendar-footnote .dot {
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: inline-block;
+}
+.calendar-footnote .dot.today {
+  background: transparent;
+  border: 2px solid var(--secondary);
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+  #habit-tracker { padding: 16px 16px 4px; }
+  .tracker-grid { grid-template-columns: 1fr; gap: 16px; }
+  .pet-stage { height: 160px; }
+  .pet-svg { width: 160px; height: 160px; }
+  .calendar-card { padding: 18px 18px; }
+}
+
+/* ============================================================
+   Pet history page (pet-history.html)
+   ============================================================ */
+.history-intro {
+  max-width: 720px;
+  margin: 0 auto 32px;
+  text-align: center;
+  font-family: var(--serif);
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: var(--text-muted);
+}
+.history-intro strong { color: var(--accent-strong); font-style: normal; }
+
+.stages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 18px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px 60px;
+}
+
+.stage-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 22px 18px 20px;
+  gap: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  position: relative;
+}
+.stage-card.current {
+  border-color: var(--accent);
+  background: linear-gradient(160deg, var(--bg-card) 0%, var(--accent-soft) 130%);
+}
+.stage-card.current::before {
+  content: 'You are here';
+  position: absolute;
+  top: -10px;
+  right: 14px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(13, 79, 74, 0.25);
+}
+
+.stage-badge {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--secondary);
+  margin-bottom: 2px;
+}
+.stage-card h3 {
+  margin: 0 0 6px;
+  font-family: var(--sans);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent-strong);
+  letter-spacing: -0.01em;
+}
+
+.stage-card-pet {
+  width: 100%;
+  height: 170px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 2px 0 6px;
+}
+.stage-card-pet .pet-svg {
+  width: 150px;
+  height: 150px;
+}
+
+.stage-threshold {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  margin: 0 0 4px;
+}
+.stage-desc {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  margin: 0 0 12px;
+  min-height: 3.3em;
+}
+.stage-features {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--text);
+  width: 100%;
+}
+.stage-features li {
+  padding: 3px 0;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.stage-features li:first-child { border-top: none; padding-top: 4px; }
+.stage-features .check {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 14px;
+  text-align: center;
+}
+
+/* Locked stages — mystery placeholder until unlocked */
+.stage-card.locked {
+  background: var(--bg-soft);
+  border-style: dashed;
+  border-color: var(--border);
+  box-shadow: none;
+}
+.stage-card.locked .stage-badge { color: var(--text-muted); }
+.stage-card.locked h3.stage-name {
+  color: transparent;
+  position: relative;
+}
+.stage-card.locked h3.stage-name::after {
+  content: '???';
+  position: absolute;
+  inset: 0;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+.stage-card.locked .stage-card-pet {
+  position: relative;
+}
+.stage-card.locked .pet-container { visibility: hidden; }
+.stage-card.locked .stage-card-pet::after {
+  content: '?';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 92px;
+  font-weight: 800;
+  color: rgba(11, 50, 47, 0.12);
+  letter-spacing: -0.05em;
+  pointer-events: none;
+  animation: mystery-pulse 3.4s ease-in-out infinite;
+}
+@keyframes mystery-pulse {
+  0%, 100% { transform: scale(1);    opacity: 1;   }
+  50%      { transform: scale(1.08); opacity: 0.7; }
+}
+.stage-card.locked .stage-threshold {
+  color: var(--secondary);
+  font-weight: 700;
+}
+.stage-card.locked .stage-threshold::before { content: '🔒  '; }
+.stage-card.locked .stage-desc {
+  color: transparent;
+  position: relative;
+}
+.stage-card.locked .stage-desc::after {
+  content: 'A mystery waiting to unlock…';
+  position: absolute;
+  inset: 0;
+  color: var(--text-muted);
+  font-style: italic;
+}
+.stage-card.locked .stage-features { display: none; }
+
+/* Stagger each gallery cat's animations so they don't blink in sync */
+.stages-grid .stage-card:nth-child(1) .pet-svg { animation-delay:  0s;   }
+.stages-grid .stage-card:nth-child(2) .pet-svg { animation-delay: -0.4s; }
+.stages-grid .stage-card:nth-child(3) .pet-svg { animation-delay: -0.8s; }
+.stages-grid .stage-card:nth-child(4) .pet-svg { animation-delay: -1.2s; }
+.stages-grid .stage-card:nth-child(5) .pet-svg { animation-delay: -1.6s; }
+.stages-grid .stage-card:nth-child(6) .pet-svg { animation-delay: -2.0s; }
+.stages-grid .stage-card:nth-child(7) .pet-svg { animation-delay: -2.4s; }
+.stages-grid .stage-card:nth-child(8) .pet-svg { animation-delay: -2.8s; }
+.stages-grid .stage-card:nth-child(1) .cat-tail { animation-delay:  0s;   }
+.stages-grid .stage-card:nth-child(2) .cat-tail { animation-delay: -0.3s; }
+.stages-grid .stage-card:nth-child(3) .cat-tail { animation-delay: -0.6s; }
+.stages-grid .stage-card:nth-child(4) .cat-tail { animation-delay: -0.9s; }
+.stages-grid .stage-card:nth-child(5) .cat-tail { animation-delay: -1.2s; }
+.stages-grid .stage-card:nth-child(6) .cat-tail { animation-delay: -1.5s; }
+.stages-grid .stage-card:nth-child(7) .cat-tail { animation-delay: -1.8s; }
+.stages-grid .stage-card:nth-child(8) .cat-tail { animation-delay: -1.0s; }
+.stages-grid .stage-card:nth-child(1) .cat-eyes { animation-delay: -1.0s; }
+.stages-grid .stage-card:nth-child(2) .cat-eyes { animation-delay: -2.5s; }
+.stages-grid .stage-card:nth-child(3) .cat-eyes { animation-delay: -3.5s; }
+.stages-grid .stage-card:nth-child(4) .cat-eyes { animation-delay: -4.2s; }
+.stages-grid .stage-card:nth-child(5) .cat-eyes { animation-delay: -5.0s; }
+.stages-grid .stage-card:nth-child(6) .cat-eyes { animation-delay: -0.5s; }
+.stages-grid .stage-card:nth-child(7) .cat-eyes { animation-delay: -3.0s; }
+.stages-grid .stage-card:nth-child(8) .cat-eyes { animation-delay: -4.8s; }
+
+@media (max-width: 720px) {
+  .stages-grid { grid-template-columns: 1fr 1fr; gap: 14px; padding: 0 16px 40px; }
+  .stage-card-pet { height: 150px; }
+  .stage-card-pet .pet-svg { width: 130px; height: 130px; }
+}
+@media (max-width: 420px) {
+  .stages-grid { grid-template-columns: 1fr; }
 }

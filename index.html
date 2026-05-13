@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
+<script src="assets/cat.js"></script>
 </head>
 <body>
 
@@ -16,7 +17,9 @@
   <div class="nav-inner">
     <a class="nav-brand" href="index.html">English Learning Records · <span>Index</span></a>
     <div class="nav-links">
+      <a href="#habit-tracker">Tracker</a>
       <a href="#records">All records</a>
+      <a href="pet-history.html">Pet history</a>
       <a href="README.md">README</a>
     </div>
   </div>
@@ -26,6 +29,41 @@
   <h1>English Learning Records</h1>
   <p class="subtitle">A personal collection of topics, passages, and practice rounds.</p>
 </header>
+
+<!-- ============ Habit tracker + pet of the month ============ -->
+<section id="habit-tracker" aria-label="Monthly practice tracker">
+  <div class="tracker-grid">
+    <!-- Pet card -->
+    <div class="pet-card card">
+      <div class="pet-month-label" id="petMonthLabel">Pet of the month</div>
+      <div class="pet-stage">
+        <div class="pet-container" id="petContainer" data-stage="0"></div>
+      </div>
+      <h3 class="pet-name" id="petName">Mochi the Cat</h3>
+      <p class="pet-level"><span class="level-pill" id="petStageBadge">Stage 0</span><span id="petLevelText">Newborn · 0 practices</span></p>
+      <p class="pet-message" id="petMessage">Add a practice to wake Mochi up!</p>
+      <div class="pet-progress" aria-hidden="true"><div class="pet-progress-fill" id="petProgressFill" style="width:0%;"></div></div>
+      <p class="pet-progress-label" id="petProgressLabel">—</p>
+      <a class="pet-history-link" href="pet-history.html">See every stage →</a>
+    </div>
+
+    <!-- Calendar card -->
+    <div class="calendar-card card">
+      <div class="calendar-header">
+        <span class="calendar-month" id="calMonth">May 2026</span>
+        <span class="calendar-stats" id="calStats">— days</span>
+      </div>
+      <div class="calendar-weekdays" aria-hidden="true">
+        <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+      </div>
+      <div class="calendar-days" id="calDays" role="list"></div>
+      <div class="calendar-footnote">
+        <span class="swatch"><span class="dot"></span>Practice day</span>
+        <span class="swatch"><span class="dot today"></span>Today</span>
+      </div>
+    </div>
+  </div>
+</section>
 
 <section id="records" style="padding-top:24px;">
   <div class="section-label" style="text-align:center;">Library</div>
@@ -63,6 +101,19 @@
        under records/. See README.md for the prompt template.
        ============================================================ -->
   <div class="records-grid" id="recordsGrid">
+
+    <a class="record-card" href="records/calves-soreness-walk.html">
+      <span class="date"><time datetime="2026-05-12">May 12, 2026</time></span>
+      <h3 class="title">Calves Soreness After a Long Walk</h3>
+      <p class="chinese">長時間步行後的小腿痠痛</p>
+      <p class="summary">Why a long walk leaves your calves throbbing the next morning — and what foam rolling, hydration, and gentle stretching actually do.</p>
+      <div class="tags">
+        <span class="tag">Health</span>
+        <span class="tag">C1 / B2 / B1</span>
+        <span class="tag">1 of 2 rounds done</span>
+      </div>
+      <span class="open-arrow">Open record →</span>
+    </a>
 
     <a class="record-card" href="records/boba-tea.html">
       <span class="date"><time datetime="2026-05-10">May 10, 2026</time></span>
@@ -167,6 +218,136 @@
 </button>
 
 <script>
+  // ===================================================================
+  // Habit tracker + pet of the month
+  // ===================================================================
+  // Pets by year-month. Cat for May 2026; extend this map for new months.
+  const PETS = {
+    '2026-05': { name: 'Mochi the Cat', species: 'cat' },
+  };
+  const DEFAULT_PET = { name: 'Companion', species: 'cat' };
+
+  // Growth stages — index = stage, [minCount, label, message]
+  const STAGES = [
+    [0,  'Newborn',   "Mochi is curled up asleep. Add your first practice to wake them up!"],
+    [1,  'Kitten',    "Mochi opens their eyes and blinks at you. Keep going!"],
+    [3,  'Junior',    "Mochi is bouncing around, full of curiosity."],
+    [5,  'Adult',     "Mochi is content and well-fed — purring softly."],
+    [8,  'Elder',     "Mochi has matured into a regal companion, crown and all."],
+    [12, 'Sage',      "Mochi has grown wise — reading glasses appear on their nose."],
+    [17, 'Mythic',    "Wings unfold behind Mochi. Something otherworldly stirs."],
+    [23, 'Legendary', "Mochi has ascended — haloed, winged, and luminous."],
+  ];
+
+  function stageProgress(count, stageIdx) {
+    if (stageIdx >= STAGES.length - 1) return { pct: 100, next: null };
+    const base = STAGES[stageIdx][0];
+    const target = STAGES[stageIdx + 1][0];
+    const span = target - base;
+    const into = count - base;
+    return {
+      pct: Math.min(100, Math.max(0, Math.round((into / span) * 100))),
+      next: { name: STAGES[stageIdx + 1][1], in: into, of: span, remaining: target - count }
+    };
+  }
+
+  function stageFor(count) {
+    let idx = 0;
+    for (let i = 0; i < STAGES.length; i++) {
+      if (count >= STAGES[i][0]) idx = i;
+    }
+    return idx;
+  }
+
+  function monthKey(year, monthZeroIndexed) {
+    return `${year}-${String(monthZeroIndexed + 1).padStart(2, '0')}`;
+  }
+
+  function initTracker() {
+    // Collect all record dates from the cards already in the DOM
+    const allDates = Array.from(
+      document.querySelectorAll('.record-card time[datetime]')
+    ).map(t => t.getAttribute('datetime'));
+
+    // Display month = today's real month
+    const today = new Date();
+    const dispYear = today.getFullYear();
+    const dispMonth = today.getMonth(); // 0-indexed
+    const key = monthKey(dispYear, dispMonth);
+
+    // Filter to this month
+    const monthDates = allDates.filter(d => d.startsWith(key));
+    const practiceSet = new Set(monthDates);
+    const count = practiceSet.size;
+
+    // --- Pet ---
+    const pet = PETS[key] || DEFAULT_PET;
+    const stage = stageFor(count);
+    const [, label, message] = STAGES[stage];
+
+    const monthName = today.toLocaleString('en-US', { month: 'long' });
+    document.getElementById('petMonthLabel').textContent =
+      `${monthName} ${dispYear} · Pet of the month`;
+    document.getElementById('petName').textContent = pet.name;
+    document.getElementById('petStageBadge').textContent = `Stage ${stage}`;
+    document.getElementById('petLevelText').textContent =
+      `${label} · ${count} practice${count === 1 ? '' : 's'}`;
+    document.getElementById('petMessage').textContent = message;
+    document.getElementById('petContainer').setAttribute('data-stage', String(stage));
+    if (window.renderCats) window.renderCats('#petContainer');
+
+    // Stash the count so pet-history.html can highlight the current stage
+    try { localStorage.setItem('currentMonthPracticeCount', String(count)); } catch (_) {}
+
+    const prog = stageProgress(count, stage);
+    document.getElementById('petProgressFill').style.width = prog.pct + '%';
+    const progLabel = document.getElementById('petProgressLabel');
+    if (progLabel) {
+      progLabel.textContent = prog.next
+        ? `${prog.next.remaining} more practice${prog.next.remaining === 1 ? '' : 's'} → ${prog.next.name}`
+        : 'Maxed out — fully evolved!';
+    }
+
+    // --- Calendar ---
+    const daysInMonth = new Date(dispYear, dispMonth + 1, 0).getDate();
+    const firstWeekday = new Date(dispYear, dispMonth, 1).getDay(); // 0 = Sun
+    const todayDay =
+      today.getFullYear() === dispYear && today.getMonth() === dispMonth
+        ? today.getDate() : -1;
+
+    const container = document.getElementById('calDays');
+    container.innerHTML = '';
+
+    // Leading empties to align day 1 with the right weekday column
+    for (let i = 0; i < firstWeekday; i++) {
+      const e = document.createElement('div');
+      e.className = 'day-cell empty';
+      container.appendChild(e);
+    }
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${key}-${String(d).padStart(2, '0')}`;
+      const cell = document.createElement('div');
+      cell.className = 'day-cell';
+      cell.setAttribute('role', 'listitem');
+      cell.textContent = d;
+      if (practiceSet.has(dateStr)) {
+        cell.classList.add('practice');
+        cell.title = `Practiced on ${monthName} ${d}`;
+      } else if (d > todayDay && todayDay !== -1) {
+        cell.classList.add('future');
+      }
+      if (d === todayDay) cell.classList.add('today');
+      container.appendChild(cell);
+    }
+
+    document.getElementById('calMonth').textContent = `${monthName} ${dispYear}`;
+    document.getElementById('calStats').textContent =
+      `${count} of ${daysInMonth} days`;
+  }
+
+  initTracker();
+
   // View toggle (cards / list) — persisted in localStorage
   const grid = document.getElementById('recordsGrid');
   const viewButtons = document.querySelectorAll('.view-btn');
