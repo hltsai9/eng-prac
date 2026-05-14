@@ -39,9 +39,9 @@
       <div class="pet-stage">
         <div class="pet-container" id="petContainer" data-stage="0"></div>
       </div>
-      <h3 class="pet-name" id="petName">Mochi the Cat</h3>
+      <h3 class="pet-name" id="petName">Maomi the Cat</h3>
       <p class="pet-level"><span class="level-pill" id="petStageBadge">Stage 0</span><span id="petLevelText">Newborn · 0 practices</span></p>
-      <p class="pet-message" id="petMessage">Add a practice to wake Mochi up!</p>
+      <p class="pet-message" id="petMessage">Add a practice to wake Maomi up!</p>
       <div class="pet-progress" aria-hidden="true"><div class="pet-progress-fill" id="petProgressFill" style="width:0%;"></div></div>
       <p class="pet-progress-label" id="petProgressLabel">—</p>
       <a class="pet-history-link" href="pet-history.html">See every stage →</a>
@@ -236,20 +236,20 @@
   // ===================================================================
   // Pets by year-month. Cat for May 2026; extend this map for new months.
   const PETS = {
-    '2026-05': { name: 'Mochi the Cat', species: 'cat' },
+    '2026-05': { name: 'Maomi the Cat', species: 'cat' },
   };
   const DEFAULT_PET = { name: 'Companion', species: 'cat' };
 
   // Growth stages — index = stage, [minCount, label, message]
   const STAGES = [
-    [0,  'Newborn',   "Mochi is curled up asleep. Add your first practice to wake them up!"],
-    [1,  'Kitten',    "Mochi opens their eyes and blinks at you. Keep going!"],
-    [3,  'Junior',    "Mochi is bouncing around, full of curiosity."],
-    [5,  'Adult',     "Mochi is content and well-fed — purring softly."],
-    [8,  'Elder',     "Mochi has matured into a regal companion, crown and all."],
-    [12, 'Sage',      "Mochi has grown wise — reading glasses appear on their nose."],
-    [17, 'Mythic',    "Wings unfold behind Mochi. Something otherworldly stirs."],
-    [23, 'Legendary', "Mochi has ascended — haloed, winged, and luminous."],
+    [0,  'Newborn',   "Maomi is curled up asleep. Add your first practice to wake them up!"],
+    [1,  'Kitten',    "Maomi opens their eyes and blinks at you. Keep going!"],
+    [3,  'Junior',    "Maomi is bouncing around, full of curiosity."],
+    [5,  'Adult',     "Maomi is content and well-fed — purring softly."],
+    [8,  'Elder',     "Maomi has matured into a regal companion, crown and all."],
+    [12, 'Sage',      "Maomi has grown wise — reading glasses appear on their nose."],
+    [17, 'Mythic',    "Wings unfold behind Maomi. Something otherworldly stirs."],
+    [23, 'Legendary', "Maomi has ascended — haloed, winged, and luminous."],
   ];
 
   function stageProgress(count, stageIdx) {
