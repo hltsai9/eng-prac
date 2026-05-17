@@ -9,7 +9,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/style.css">
-<script src="assets/cat.js"></script>
+<script src="assets/pet-registry.js"></script>
+<script src="assets/pet-schedule.js"></script>
+<script src="assets/index-renderer.js"></script>
+<script src="records/manifest.js"></script>
 </head>
 <body>
 
@@ -40,9 +43,9 @@
       <div class="pet-stage">
         <div class="pet-container" id="petContainer" data-stage="0"></div>
       </div>
-      <h3 class="pet-name" id="petName">Maomi the Cat</h3>
-      <p class="pet-level"><span class="level-pill" id="petStageBadge">Stage 0</span><span id="petLevelText">Newborn · 0 practices</span></p>
-      <p class="pet-message" id="petMessage">Add a practice to wake Maomi up!</p>
+      <h3 class="pet-name" id="petName">Companion</h3>
+      <p class="pet-level"><span class="level-pill" id="petStageBadge">Stage 0</span><span id="petLevelText">— · 0 practices</span></p>
+      <p class="pet-message" id="petMessage">Add a practice to wake your companion up!</p>
       <div class="pet-progress" aria-hidden="true"><div class="pet-progress-fill" id="petProgressFill" style="width:0%;"></div></div>
       <p class="pet-progress-label" id="petProgressLabel">—</p>
       <a class="pet-history-link" href="pet-history.html">See every stage →</a>
@@ -51,7 +54,7 @@
     <!-- Calendar card -->
     <div class="calendar-card card">
       <div class="calendar-header">
-        <span class="calendar-month" id="calMonth">May 2026</span>
+        <span class="calendar-month" id="calMonth">—</span>
         <span class="calendar-stats" id="calStats">— days</span>
       </div>
       <div class="calendar-weekdays" aria-hidden="true">
@@ -107,172 +110,9 @@
     </div>
   </div>
 
-  <!-- ============================================================
-       RECORDS LIST
-       To add a new record, insert a new <a class="record-card"> block
-       in this grid (newest first), then create a matching HTML file
-       under records/. See README.md for the prompt template.
-       ============================================================ -->
-  <div class="records-grid" id="recordsGrid">
-
-    <a class="record-card" href="records/espresso-ipad-2026-05-17.html">
-      <span class="date"><time datetime="2026-05-17">May 17, 2026</time></span>
-      <h3 class="title">The iPad</h3>
-      <p class="chinese">悄悄改變日常的科技</p>
-      <p class="summary">Two ways a tablet quietly reshaped daily life — digital notes that don't pile up, and travel videos that finally fit the screen.</p>
-      <div class="tags">
-        <span class="tag">Tech</span>
-        <span class="tag">Espresso</span>
-        <span class="tag">60·50·40s</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/claude-skill-folder.html">
-      <span class="date"><time datetime="2026-05-15">May 15, 2026</time></span>
-      <h3 class="title">Claude Skill Folder and Markdown File</h3>
-      <p class="chinese">Claude 技能資料夾與 Markdown 檔案</p>
-      <p class="summary">How a folder with a single SKILL.md file teaches Claude when to act and how to follow domain-specific best practices step by step.</p>
-      <div class="tags">
-        <span class="tag">AI</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">1 practice round</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/claude-skill.html">
-      <span class="date"><time datetime="2026-05-14">May 14, 2026</time></span>
-      <h3 class="title">Claude Skill</h3>
-      <p class="chinese">Claude 技能</p>
-      <p class="summary">Anthropic's answer to the prompt-pasting problem — a folder bundling instructions and resources that Claude loads on demand.</p>
-      <div class="tags">
-        <span class="tag">AI</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">1 of 2 rounds done</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/internal-audit.html">
-      <span class="date"><time datetime="2026-05-13">May 13, 2026</time></span>
-      <h3 class="title">Internal Audit</h3>
-      <p class="chinese">內部稽核</p>
-      <p class="summary">The quiet function that keeps modern companies from drifting into chaos — what internal auditors actually do, and why the role matters.</p>
-      <div class="tags">
-        <span class="tag">Business</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">1 of 2 rounds done</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/calves-soreness-walk.html">
-      <span class="date"><time datetime="2026-05-12">May 12, 2026</time></span>
-      <h3 class="title">Calves Soreness After a Long Walk</h3>
-      <p class="chinese">長時間步行後的小腿痠痛</p>
-      <p class="summary">Why a long walk leaves your calves throbbing the next morning — and what foam rolling, hydration, and gentle stretching actually do.</p>
-      <div class="tags">
-        <span class="tag">Health</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">1 of 2 rounds done</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/boba-tea.html">
-      <span class="date"><time datetime="2026-05-10">May 10, 2026</time></span>
-      <h3 class="title">Boba Tea</h3>
-      <p class="chinese">珍珠奶茶</p>
-      <p class="summary">Why a humble milk tea with chewy tapioca pearls — born in 1980s Taiwan — quietly became a global cultural ambassador.</p>
-      <div class="tags">
-        <span class="tag">Food &amp; Culture</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">2 of 3 rounds done</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/sequoia-national-park.html">
-      <span class="date"><time datetime="2026-05-08">May 8, 2026</time></span>
-      <h3 class="title">Sequoia National Park</h3>
-      <p class="chinese">紅杉國家公園</p>
-      <p class="summary">How California's southern Sierra Nevada hides the largest living organisms on Earth — and what a walk among the giant sequoias reveals about deep time.</p>
-      <div class="tags">
-        <span class="tag">Nature</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">1 of 2 rounds done</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/pilates.html">
-      <span class="date"><time datetime="2026-05-07">May 7, 2026</time></span>
-      <h3 class="title">Pilates</h3>
-      <p class="chinese">皮拉提斯</p>
-      <p class="summary">How a low-impact discipline focused on quality of movement builds core strength, posture, and body awareness — rewarding patience over exhaustion.</p>
-      <div class="tags">
-        <span class="tag">Fitness</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">1 practice round</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/keeping-a-journal.html">
-      <span class="date"><time datetime="2026-05-06">May 6, 2026</time></span>
-      <h3 class="title">Keeping a Journal</h3>
-      <p class="chinese">寫日記的習慣</p>
-      <p class="summary">How a few quiet minutes a day with pen and paper can untangle thoughts, sharpen self-awareness, and quietly reshape how we relate to ourselves.</p>
-      <div class="tags">
-        <span class="tag">Habits</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">1 practice round</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/full-cast-audiobook.html">
-      <span class="date"><time datetime="2026-05-05">May 5, 2026</time></span>
-      <h3 class="title">Full Cast Audiobook</h3>
-      <p class="chinese">全演員陣容有聲書</p>
-      <p class="summary">How a full cast audiobook turns a single-narrator reading into a radio-drama-style experience with multiple actors, sound design, and atmospheric scoring.</p>
-      <div class="tags">
-        <span class="tag">Audiobooks</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">2 practice rounds</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/placebo-effect.html">
-      <span class="date"><time datetime="2026-05-04">May 4, 2026</time></span>
-      <h3 class="title">The Placebo Effect</h3>
-      <p class="chinese">安慰劑效應</p>
-      <p class="summary">How belief alone can trigger real physiological change — and why every modern drug trial must outperform a sugar pill.</p>
-      <div class="tags">
-        <span class="tag">Medicine</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">1 practice round</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <a class="record-card" href="records/llm-embeddings.html">
-      <span class="date"><time datetime="2026-05-03">May 3, 2026</time></span>
-      <h3 class="title">LLM Embeddings</h3>
-      <p class="chinese">LLM 嵌入</p>
-      <p class="summary">How language models grasp meaning by turning words into high-dimensional vectors that encode semantic relationships.</p>
-      <div class="tags">
-        <span class="tag">AI</span>
-        <span class="tag">C1 / B2 / B1</span>
-        <span class="tag">3 practice rounds</span>
-      </div>
-      <span class="open-arrow">Open record →</span>
-    </a>
-
-    <!-- ↑ insert new <a class="record-card"> blocks above this line ↑ -->
-  </div>
+  <!-- Records are rendered from records/manifest.js by assets/index-renderer.js.
+       To add a new record, append one entry to that manifest — no edits here. -->
+  <div class="records-grid" id="recordsGrid"></div>
 </section>
 
 <button class="back-to-top" id="backToTop" aria-label="Back to top">
@@ -284,87 +124,48 @@
 
 <script>
   // ===================================================================
-  // Habit tracker + pet of the month
+  // Boot: load all pet species, then render cards + tracker.
   // ===================================================================
-  // Pets by year-month. Cat for May 2026; extend this map for new months.
-  const PETS = {
-    '2026-05': { name: 'Maomi the Cat', species: 'cat' },
-  };
-  const DEFAULT_PET = { name: 'Companion', species: 'cat' };
-
-  // Growth stages — index = stage, [minCount, label, message]
-  const STAGES = [
-    [0,  'Newborn',   "Maomi is curled up asleep. Add your first practice to wake them up!"],
-    [1,  'Kitten',    "Maomi opens their eyes and blinks at you. Keep going!"],
-    [3,  'Junior',    "Maomi is bouncing around, full of curiosity."],
-    [5,  'Adult',     "Maomi is content and well-fed — purring softly."],
-    [8,  'Elder',     "Maomi has matured into a regal companion, crown and all."],
-    [12, 'Sage',      "Maomi has grown wise — reading glasses appear on their nose."],
-    [17, 'Mythic',    "Wings unfold behind Maomi. Something otherworldly stirs."],
-    [23, 'Legendary', "Maomi has ascended — haloed, winged, and luminous."],
-  ];
-
-  function stageProgress(count, stageIdx) {
-    if (stageIdx >= STAGES.length - 1) return { pct: 100, next: null };
-    const base = STAGES[stageIdx][0];
-    const target = STAGES[stageIdx + 1][0];
-    const span = target - base;
-    const into = count - base;
-    return {
-      pct: Math.min(100, Math.max(0, Math.round((into / span) * 100))),
-      next: { name: STAGES[stageIdx + 1][1], in: into, of: span, remaining: target - count }
-    };
-  }
-
-  function stageFor(count) {
-    let idx = 0;
-    for (let i = 0; i < STAGES.length; i++) {
-      if (count >= STAGES[i][0]) idx = i;
-    }
-    return idx;
-  }
-
   function monthKey(year, monthZeroIndexed) {
     return `${year}-${String(monthZeroIndexed + 1).padStart(2, '0')}`;
   }
 
-  function initTracker() {
-    // Collect all record dates from the cards already in the DOM
-    const allDates = Array.from(
-      document.querySelectorAll('.record-card time[datetime]')
-    ).map(t => t.getAttribute('datetime'));
-
-    // Display month = today's real month
+  function initTracker(indexHandle) {
     const today = new Date();
     const dispYear = today.getFullYear();
-    const dispMonth = today.getMonth(); // 0-indexed
+    const dispMonth = today.getMonth();
     const key = monthKey(dispYear, dispMonth);
 
-    // Filter to this month
-    const monthDates = allDates.filter(d => d.startsWith(key));
+    const monthDates = indexHandle.datesForMonth(key);
     const practiceSet = new Set(monthDates);
     const count = practiceSet.size;
 
     // --- Pet ---
-    const pet = PETS[key] || DEFAULT_PET;
-    const stage = stageFor(count);
-    const [, label, message] = STAGES[stage];
+    const species = (window.PET_SCHEDULE && window.PET_SCHEDULE[key]) || window.PET_SCHEDULE_DEFAULT;
+    const def = window.PetRegistry.get(species);
+    if (!def) {
+      console.warn('No pet registered for species:', species);
+      return;
+    }
+    const stage = window.PetRegistry.stageForCount(species, count);
+    const stageData = def.stages[stage];
 
     const monthName = today.toLocaleString('en-US', { month: 'long' });
     document.getElementById('petMonthLabel').textContent =
       `${monthName} ${dispYear} · Pet of the month`;
-    document.getElementById('petName').textContent = pet.name;
+    document.getElementById('petName').textContent = def.displayName;
     document.getElementById('petStageBadge').textContent = `Stage ${stage}`;
     document.getElementById('petLevelText').textContent =
-      `${label} · ${count} practice${count === 1 ? '' : 's'}`;
-    document.getElementById('petMessage').textContent = message;
-    document.getElementById('petContainer').setAttribute('data-stage', String(stage));
-    if (window.renderCats) window.renderCats('#petContainer');
+      `${stageData.name} · ${count} practice${count === 1 ? '' : 's'}`;
+    document.getElementById('petMessage').textContent = stageData.message;
+    window.PetRegistry.render(species, '#petContainer', stage);
 
-    // Stash the count so pet-history.html can highlight the current stage
-    try { localStorage.setItem('currentMonthPracticeCount', String(count)); } catch (_) {}
+    try {
+      localStorage.setItem('currentMonthPracticeCount', String(count));
+      localStorage.setItem('currentMonthPetSpecies', species);
+    } catch (_) {}
 
-    const prog = stageProgress(count, stage);
+    const prog = window.PetRegistry.stageProgress(species, count);
     document.getElementById('petProgressFill').style.width = prog.pct + '%';
     const progLabel = document.getElementById('petProgressLabel');
     if (progLabel) {
@@ -375,21 +176,16 @@
 
     // --- Calendar ---
     const daysInMonth = new Date(dispYear, dispMonth + 1, 0).getDate();
-    const firstWeekday = new Date(dispYear, dispMonth, 1).getDay(); // 0 = Sun
-    const todayDay =
-      today.getFullYear() === dispYear && today.getMonth() === dispMonth
-        ? today.getDate() : -1;
+    const firstWeekday = new Date(dispYear, dispMonth, 1).getDay();
+    const todayDay = today.getDate();
 
     const container = document.getElementById('calDays');
     container.innerHTML = '';
-
-    // Leading empties to align day 1 with the right weekday column
     for (let i = 0; i < firstWeekday; i++) {
       const e = document.createElement('div');
       e.className = 'day-cell empty';
       container.appendChild(e);
     }
-
     for (let d = 1; d <= daysInMonth; d++) {
       const dateStr = `${key}-${String(d).padStart(2, '0')}`;
       const cell = document.createElement('div');
@@ -399,50 +195,58 @@
       if (practiceSet.has(dateStr)) {
         cell.classList.add('practice');
         cell.title = `Practiced on ${monthName} ${d}`;
-      } else if (d > todayDay && todayDay !== -1) {
+      } else if (d > todayDay) {
         cell.classList.add('future');
       }
       if (d === todayDay) cell.classList.add('today');
       container.appendChild(cell);
     }
-
     document.getElementById('calMonth').textContent = `${monthName} ${dispYear}`;
-    document.getElementById('calStats').textContent =
-      `${count} of ${daysInMonth} days`;
+    document.getElementById('calStats').textContent = `${count} of ${daysInMonth} days`;
   }
 
-  initTracker();
-
-  // View toggle (cards / list) — persisted in localStorage
-  const grid = document.getElementById('recordsGrid');
-  const viewButtons = document.querySelectorAll('.view-btn');
-  const savedView = localStorage.getItem('recordsView') === 'list' ? 'list' : 'grid';
-  applyView(savedView);
-
-  viewButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const mode = btn.dataset.view;
-      applyView(mode);
-      localStorage.setItem('recordsView', mode);
+  function initViewToggle() {
+    const grid = document.getElementById('recordsGrid');
+    const viewButtons = document.querySelectorAll('.view-btn');
+    const savedView = localStorage.getItem('recordsView') === 'list' ? 'list' : 'grid';
+    applyView(savedView);
+    viewButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.view;
+        applyView(mode);
+        localStorage.setItem('recordsView', mode);
+      });
     });
-  });
+    function applyView(mode) {
+      grid.classList.toggle('list-view', mode === 'list');
+      viewButtons.forEach(b => {
+        const active = b.dataset.view === mode;
+        b.classList.toggle('active', active);
+        b.setAttribute('aria-pressed', String(active));
+      });
+    }
+  }
 
-  function applyView(mode) {
-    grid.classList.toggle('list-view', mode === 'list');
-    viewButtons.forEach(b => {
-      const active = b.dataset.view === mode;
-      b.classList.toggle('active', active);
-      b.setAttribute('aria-pressed', String(active));
+  function initBackToTop() {
+    const backBtn = document.getElementById('backToTop');
+    window.addEventListener('scroll', () => {
+      backBtn.classList.toggle('visible', window.scrollY > 400);
+    });
+    backBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   }
 
-  // Back to top
-  const backBtn = document.getElementById('backToTop');
-  window.addEventListener('scroll', () => {
-    backBtn.classList.toggle('visible', window.scrollY > 400);
-  });
-  backBtn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.loadAllPets().then(() => {
+    const indexHandle = window.IndexRenderer.mount('#recordsGrid');
+    initTracker(indexHandle);
+    initViewToggle();
+    initBackToTop();
+  }).catch(err => {
+    console.error('Failed to load pets:', err);
+    const indexHandle = window.IndexRenderer.mount('#recordsGrid');
+    initViewToggle();
+    initBackToTop();
   });
 </script>
 

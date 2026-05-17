@@ -416,12 +416,13 @@
   </div>
 
   <div class="controls" style="margin-top:24px;">
-    <button class="btn primary" id="downloadBtn">Download record HTML</button>
-    <button class="btn" id="copyBtn">Copy markup</button>
+    <button class="btn primary" id="downloadBtn">Download record</button>
+    <button class="btn" id="copyBtn">Copy data</button>
     <button class="btn ghost" id="restartBtn">Start a new session</button>
   </div>
   <p class="meta-foot">
-    Drop the downloaded file into <code>records/</code> and add a card to <code>index.html</code> — same flow as paragraph records.
+    Drop the downloaded file into <code>records/data/</code> and append a matching
+    entry to <code>records/manifest.js</code> — the index card appears automatically.
   </p>
 </section>
 
@@ -641,9 +642,9 @@
 
   document.getElementById('copyBtn').addEventListener('click', async () => {
     readRecapInputs();
-    const html = buildRecordHtml();
+    const src = buildRecordJs();
     try {
-      await navigator.clipboard.writeText(html);
+      await navigator.clipboard.writeText(src);
       const btn = document.getElementById('copyBtn');
       const orig = btn.textContent;
       btn.textContent = 'Copied!';
@@ -673,7 +674,7 @@
     session.closingNotes = document.getElementById('closingNotesInput').value;
   }
 
-  // ----- Record HTML build / download -----
+  // ----- Record data-file build / download -----
   function slugify(s) {
     return (s || '').toLowerCase()
       .replace(/[^\w\s-]/g, '')
@@ -689,174 +690,127 @@
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;');
   }
-  function paragraphs(s) {
+  // For embedding a string inside a single-quoted JS literal.
+  function jsString(s) {
+    return "'" + (s || '')
+      .replace(/\\/g, '\\\\')
+      .replace(/'/g, "\\'")
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '') + "'";
+  }
+  function notesHtml(s) {
     const text = (s || '').trim();
-    if (!text) return '<p style="color: var(--text-muted); font-style: italic; margin:0;">(no notes captured)</p>';
+    if (!text) return '<em style="color: var(--text-muted);">(no notes captured)</em>';
     return text
       .split(/\n{2,}/)
-      .map(p => '<p>' + escapeHtml(p).replace(/\n/g, '<br>') + '</p>')
-      .join('\n      ');
+      .map(p => escapeHtml(p).replace(/\n/g, '<br>'))
+      .join('<br><br>');
+  }
+  function inlineHtml(s) {
+    return escapeHtml(s).replace(/\n/g, '<br>');
   }
   function todayIso() {
     return new Date().toISOString().slice(0, 10);
   }
-  function todayHuman() {
-    return new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-  }
 
-  function buildRecordHtml() {
+  function buildRecordJs() {
     const topic = session.topic || 'Espresso Session';
     const isoDate = todayIso();
-    const humanDate = todayHuman();
-    const finalSpeech = escapeHtml(session.finalSpeech).replace(/\n/g, '<br>') || '(transcript not captured)';
-    const polished = escapeHtml(session.polishedSpeech).replace(/\n/g, '<br>') || '(polished version not captured)';
+    const slug = 'espresso-' + (slugify(topic) || 'session') + '-' + isoDate;
+    const finalSpeech = inlineHtml(session.finalSpeech) || '<em>(transcript not captured)</em>';
+    const polished = inlineHtml(session.polishedSpeech) || '<em>(polished version not captured)</em>';
     const closing = (session.closingNotes || '').trim();
-    const closingHtml = closing
-      ? '<p class="summary-note">"' + escapeHtml(closing) + '"</p>'
-      : '<p class="summary-note">"Espresso pass complete — three rounds, shrinking windows."</p>';
+    const note = closing
+      ? '"' + closing.replace(/"/g, '\\"') + '"'
+      : '"Espresso pass complete — three rounds, shrinking windows."';
 
-    return '<!DOCTYPE html>\n'
-      + '<html lang="en">\n'
-      + '<head>\n'
-      + '<meta charset="UTF-8">\n'
-      + '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
-      + '<title>' + escapeHtml(topic) + ' — Espresso Session</title>\n'
-      + '<meta name="description" content="An Espresso-method speaking session: three timed rounds (60s → 50s → 40s) with prep notes and a polished rewrite.">\n'
-      + '<meta name="record-date" content="' + isoDate + '">\n'
-      + '<meta name="record-method" content="espresso">\n'
-      + '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
-      + '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-      + '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">\n'
-      + '<link rel="stylesheet" href="../assets/style.css">\n'
-      + '</head>\n'
-      + '<body>\n\n'
-      + '<nav class="topnav">\n'
-      + '  <div class="nav-inner">\n'
-      + '    <a class="nav-brand" href="../index.html">English Learning Record · <span>' + escapeHtml(topic) + '</span></a>\n'
-      + '    <div class="nav-links">\n'
-      + '      <a class="back" href="../index.html">← All records</a>\n'
-      + '      <a href="../espresso.html">Espresso method</a>\n'
-      + '      <a href="#topic">Topic</a>\n'
-      + '      <a href="#rounds">Rounds</a>\n'
-      + '      <a href="#compare">Final speech</a>\n'
-      + '      <a href="#summary">Summary</a>\n'
-      + '    </div>\n'
-      + '  </div>\n'
-      + '</nav>\n\n'
-      + '<header class="hero">\n'
-      + '  <h1>' + escapeHtml(topic) + '</h1>\n'
-      + '  <p class="subtitle">Espresso method · three timed rounds · 60s → 50s → 40s</p>\n'
-      + '  <p class="meta">Created on <time datetime="' + isoDate + '">' + humanDate + '</time></p>\n'
-      + '</header>\n\n'
-      + '<section id="topic">\n'
-      + '  <div class="section-label">Section 01</div>\n'
-      + '  <h2>Topic</h2>\n'
-      + '  <article class="card prose">\n'
-      + '    <p>' + escapeHtml(topic) + '</p>\n'
-      + '  </article>\n'
-      + '</section>\n\n'
-      + '<section id="rounds">\n'
-      + '  <div class="section-label">Section 02</div>\n'
-      + '  <h2>Round-by-Round Notes</h2>\n\n'
-      + '  <article class="round">\n'
-      + '    <div class="round-header">\n'
-      + '      <span class="round-number">Round 1</span>\n'
-      + '      <span class="badge c1">0:60 speech</span>\n'
-      + '    </div>\n'
-      + '    <div class="round-prompt">\n'
-      + '      <strong>Prep window</strong>\n'
-      + '      3 minutes to organize the speech, then 60 seconds to deliver it cold.\n'
-      + '    </div>\n'
-      + '    <div class="corrections">\n'
-      + '      <h4>Prep notes</h4>\n'
-      + '      ' + paragraphs(session.r1PrepNotes) + '\n'
-      + '    </div>\n'
-      + '  </article>\n\n'
-      + '  <article class="round">\n'
-      + '    <div class="round-header">\n'
-      + '      <span class="round-number">Round 2</span>\n'
-      + '      <span class="badge c1">0:50 speech</span>\n'
-      + '    </div>\n'
-      + '    <div class="round-prompt">\n'
-      + '      <strong>During prep — reflection on Round 1</strong>\n'
-      + '      What made me pause · what I said wrong · what I missed. Tighten and re-attempt in 50 seconds.\n'
-      + '    </div>\n'
-      + '    <div class="corrections">\n'
-      + '      <h4>Prep notes &amp; reflection</h4>\n'
-      + '      ' + paragraphs(session.r2PrepNotes) + '\n'
-      + '    </div>\n'
-      + '  </article>\n\n'
-      + '  <article class="round">\n'
-      + '    <div class="round-header">\n'
-      + '      <span class="round-number">Round 3</span>\n'
-      + '      <span class="badge c1plus">0:40 speech</span>\n'
-      + '    </div>\n'
-      + '    <div class="round-prompt">\n'
-      + '      <strong>During prep — structural pass</strong>\n'
-      + '      Cut unimportant details, adjust the structure, land a punchier closer. Final attempt in 40 seconds.\n'
-      + '    </div>\n'
-      + '    <div class="corrections">\n'
-      + '      <h4>Structural prep notes</h4>\n'
-      + '      ' + paragraphs(session.r3PrepNotes) + '\n'
-      + '    </div>\n'
-      + '  </article>\n'
-      + '</section>\n\n'
-      + '<section id="compare">\n'
-      + '  <div class="section-label">Section 03</div>\n'
-      + '  <h2>Final Speech vs. AI-Improved Version</h2>\n'
-      + '  <div class="round">\n'
-      + '    <div class="compare">\n'
-      + '      <div class="compare-col mine">\n'
-      + '        <div class="compare-label">My Final Speech (Round 3)</div>\n'
-      + '        <p class="compare-text">' + finalSpeech + '</p>\n'
-      + '      </div>\n'
-      + '      <div class="compare-col polished">\n'
-      + '        <div class="compare-label">AI-Improved Version</div>\n'
-      + '        <p class="compare-text">' + polished + '</p>\n'
-      + '      </div>\n'
-      + '    </div>\n'
-      + '  </div>\n'
-      + '</section>\n\n'
-      + '<footer class="summary" id="summary">\n'
-      + '  <div class="summary-card">\n'
-      + '    <div class="section-label">Session Summary</div>\n'
-      + '    <h2>Espresso Pass — Three Rounds</h2>\n'
-      + '    <ul class="summary-list">\n'
-      + '      <li><span class="round-tag">Round 1</span><span><span class="level-pill">0:60</span>Cold-open delivery after a 3-minute prep window.</span></li>\n'
-      + '      <li><span class="round-tag">Round 2</span><span><span class="level-pill">0:50</span>Reflected on R1 pauses / errors / omissions during prep, then re-delivered in a tighter window.</span></li>\n'
-      + '      <li><span class="round-tag">Round 3</span><span><span class="level-pill">0:40</span>Structural pass — cut details, reordered, landed the close. Final speech captured.</span></li>\n'
-      + '    </ul>\n'
-      + '    ' + closingHtml + '\n'
-      + '  </div>\n'
-      + '</footer>\n\n'
-      + '<button class="back-to-top" id="backToTop" aria-label="Back to top">\n'
-      + '  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">\n'
-      + '    <line x1="12" y1="19" x2="12" y2="5"></line>\n'
-      + '    <polyline points="5 12 12 5 19 12"></polyline>\n'
-      + '  </svg>\n'
-      + '</button>\n\n'
-      + '<script>\n'
-      + '  const backBtn = document.getElementById("backToTop");\n'
-      + '  window.addEventListener("scroll", () => {\n'
-      + '    backBtn.classList.toggle("visible", window.scrollY > 400);\n'
-      + '  });\n'
-      + '  backBtn.addEventListener("click", () => {\n'
-      + '    window.scrollTo({ top: 0, behavior: "smooth" });\n'
-      + '  });\n'
-      + '<\/script>\n\n'
-      + '</body>\n'
-      + '</html>\n';
+    return '/* Espresso session — generated by espresso.html on ' + isoDate + '. */\n'
+      + 'window.RECORD_REGISTRY = window.RECORD_REGISTRY || {};\n'
+      + 'window.RECORD_REGISTRY[' + jsString(slug) + '] = {\n'
+      + '  meta: {\n'
+      + '    slug: ' + jsString(slug) + ',\n'
+      + '    date: ' + jsString(isoDate) + ',\n'
+      + '    titleEn: ' + jsString(topic) + ',\n'
+      + '    titleZh: ' + jsString('') + ',\n'
+      + '    method: \'espresso\',\n'
+      + '    navBrandText: ' + jsString(topic) + ',\n'
+      + '    heroTitle: ' + jsString(topic) + ',\n'
+      + '  },\n'
+      + '  topic: ' + jsString(topic) + ',\n'
+      + '  rounds: [\n'
+      + '    {\n'
+      + '      number: 1,\n'
+      + '      timeLabel: \'0:60 speech\',\n'
+      + '      badge: \'c1\',\n'
+      + '      promptTitle: \'Prep window\',\n'
+      + '      promptHtml: \'3 minutes to organize the speech, then 60 seconds to deliver it cold.\',\n'
+      + '      notesTitle: \'Prep notes\',\n'
+      + '      notesHtml: ' + jsString(notesHtml(session.r1PrepNotes)) + ',\n'
+      + '    },\n'
+      + '    {\n'
+      + '      number: 2,\n'
+      + '      timeLabel: \'0:50 speech\',\n'
+      + '      badge: \'c1\',\n'
+      + '      promptTitle: \'During prep — reflection on Round 1\',\n'
+      + '      promptHtml: \'What made me pause · what I said wrong · what I missed. Tighten and re-attempt in 50 seconds.\',\n'
+      + '      notesTitle: \'Prep notes & reflection\',\n'
+      + '      notesHtml: ' + jsString(notesHtml(session.r2PrepNotes)) + ',\n'
+      + '    },\n'
+      + '    {\n'
+      + '      number: 3,\n'
+      + '      timeLabel: \'0:40 speech\',\n'
+      + '      badge: \'c1plus\',\n'
+      + '      promptTitle: \'During prep — structural pass\',\n'
+      + '      promptHtml: \'Cut unimportant details, adjust the structure, land a punchier closer. Final attempt in 40 seconds.\',\n'
+      + '      notesTitle: \'Structural prep notes\',\n'
+      + '      notesHtml: ' + jsString(notesHtml(session.r3PrepNotes)) + ',\n'
+      + '    },\n'
+      + '  ],\n'
+      + '  finalCompare: {\n'
+      + '    heading: \'Final Speech vs. AI-Improved Version\',\n'
+      + '    mineLabel: \'My Final Speech (Round 3)\',\n'
+      + '    polishedLabel: \'AI-Improved Version\',\n'
+      + '    mine: ' + jsString(finalSpeech) + ',\n'
+      + '    polished: ' + jsString(polished) + ',\n'
+      + '  },\n'
+      + '  summary: {\n'
+      + '    sectionLabel: \'Session Summary\',\n'
+      + '    heading: \'Espresso Pass — Three Rounds\',\n'
+      + '    items: [\n'
+      + '      { round: 1, levelPill: \'0:60\', html: \'Cold-open delivery after a 3-minute prep window.\' },\n'
+      + '      { round: 2, levelPill: \'0:50\', html: \'Reflected on R1 pauses / errors / omissions during prep, then re-delivered in a tighter window.\' },\n'
+      + '      { round: 3, levelPill: \'0:40\', html: \'Structural pass — cut details, reordered, landed the close. Final speech captured.\' },\n'
+      + '    ],\n'
+      + '    note: ' + jsString(note) + ',\n'
+      + '  },\n'
+      + '};\n';
+  }
+
+  function buildManifestSnippet() {
+    const topic = session.topic || 'Espresso Session';
+    const isoDate = todayIso();
+    const slug = 'espresso-' + (slugify(topic) || 'session') + '-' + isoDate;
+    return '/* Append this entry to records/manifest.js: */\n'
+      + '{\n'
+      + '  slug: ' + jsString(slug) + ',\n'
+      + '  date: ' + jsString(isoDate) + ',\n'
+      + '  titleEn: ' + jsString(topic) + ',\n'
+      + '  titleZh: \'\',\n'
+      + '  summary: \'\',\n'
+      + '  tags: [\'Espresso\', \'60·50·40s\'],\n'
+      + '  method: \'espresso\',\n'
+      + '},\n';
   }
 
   function downloadRecord() {
-    const html = buildRecordHtml();
+    const src = buildRecordJs() + '\n' + buildManifestSnippet();
     const topic = session.topic || 'session';
     const slug = 'espresso-' + (slugify(topic) || 'session') + '-' + todayIso();
-    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const blob = new Blob([src], { type: 'application/javascript;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = slug + '.html';
+    a.download = slug + '.js';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

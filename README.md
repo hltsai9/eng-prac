@@ -6,64 +6,74 @@ A small static site for keeping a personal collection of English learning record
 
 ```
 Eng-Prac/
-├── index.html                  # Listing page — the cards of all records
-├── espresso.html               # Espresso-method live practice page
-├── README.md                   # This file (with the prompt template)
+├── index.html                       # Listing page — renders cards from the manifest
+├── record.html                      # Single template that renders any record via ?slug=
+├── espresso.html                    # Espresso-method live practice page
+├── pet-history.html                 # Pet growth gallery (dynamic, per species)
+├── README.md                        # This file
 ├── assets/
-│   ├── style.css               # Shared design system used by every page
-│   └── espresso-topics.js      # Editable list of Espresso prompts
+│   ├── style.css                    # Shared design system used by every page
+│   ├── index-renderer.js            # Builds the grid of record cards from manifest
+│   ├── record-renderer.js           # Renders a record page from its data file
+│   ├── pet-registry.js              # Pluggable pet registry + loader
+│   ├── pet-schedule.js              # Maps year-month → pet species
+│   ├── espresso-topics.js           # Editable list of Espresso prompts
+│   └── pets/
+│       ├── manifest.js              # Lists pet species to auto-load
+│       └── cat.js                   # Maomi the Cat (May 2026 companion)
 └── records/
-    └── llm-embeddings.html     # One record per file (the canonical example)
+    ├── manifest.js                  # Cards list — slug, date, title, tags, summary
+    └── data/                        # One JS data file per record
+        ├── llm-embeddings.js
+        ├── boba-tea.js
+        └── … (one per topic)
 ```
 
-- `index.html` is the home page. It shows a grid of cards, one per record, with the creation date.
-- Each record lives as its own file in `records/<slug>.html` and uses the shared stylesheet at `../assets/style.css`.
-- To add a new record, you create a new file under `records/` and insert one new `<a class="record-card">` block at the top of the grid in `index.html`.
+- **No build step.** The site is pure static files and works directly via `file://`.
+- **Adding a record = creating one file + appending one manifest entry.** The card on `index.html` and the rendered page at `record.html?slug=<slug>` both appear automatically.
+- **Adding a new pet next month = dropping one file under `assets/pets/`** + listing it in `assets/pets/manifest.js` + assigning it to a month in `assets/pet-schedule.js`. Each pet is self-contained: its own SVG, growth stages, and CSS rules.
 
 ## Viewing the site
 
-Open `index.html` directly in a browser (double-click or `file://`) — there is no build step and no server required. Click any card to open the record. Use the **← All records** link in the record's nav to come back.
+Open `index.html` directly in a browser (double-click or `file://`) — there is no build step and no server required. Click any card to open it at `record.html?slug=<slug>`. Use the **← All records** link in the record's nav to come back.
 
 ## Adding a new record (in another Claude chat)
 
 This repo ships with a Claude Code skill at `.claude/skills/new-learning-record/SKILL.md`. Open a fresh Claude Code chat with this folder as the working directory and either:
 
-- **Use the skill**: type `/new-learning-record` (or just describe the topic — Claude will pick it up from the description). The skill knows the template, will ask for any missing content, and will create both the new record file and the listing card.
+- **Use the skill**: type `/new-learning-record` (or just describe the topic — Claude will pick it up from the description). The skill knows the data schema, will ask for any missing content, and will create both the new data file and the manifest entry.
 - **Or paste the prompt below** — it produces the same result without relying on the skill, useful in non-Claude-Code chats.
-
-Open a fresh Claude Code chat with this folder as the working directory and paste the prompt below, replacing the bracketed placeholders with your topic content. Claude will read the existing record as a template, generate a new `records/<slug>.html`, and prepend a new card to `index.html`.
 
 ````markdown
 # Task: Add a new English Learning Record
 
-I have a static site at this folder for keeping English learning records. Read these two files first to understand the structure and the design system you must follow:
+I have a static site at this folder for keeping English learning records. Read these files first to understand the schema you must follow:
 
-- `records/llm-embeddings.html` — the canonical example. Copy its structure exactly: same `<head>`, same five sections (Intro / Passages / Vocabulary / Practice / Summary), same nav with the "← All records" link, same tabs/back-to-top JS at the bottom.
-- `assets/style.css` — the shared stylesheet. Use only the classes already defined here (card, prose, tabs, tab-button, table.vocab, round, compare, corrections, badge, summary-card, etc.). Do NOT add a `<style>` block; link `../assets/style.css` like the example does.
-- `index.html` — the listing page. You will insert a new `<a class="record-card">` block at the TOP of the `.records-grid` (newest first), just after the `<!-- RECORDS LIST -->` comment.
+- `records/data/pilates.js` — the canonical example of a one-round standard record. Mirror its shape exactly.
+- `records/data/llm-embeddings.js` — canonical example of a full three-round record.
+- `records/data/boba-tea.js` — example with a pending round (use the `status` field).
+- `records/manifest.js` — append one entry here so the card appears.
+- `assets/style.css` — the shared stylesheet. Use only the classes already defined here. Do NOT add a `<style>` block.
 
 Then do the following two things:
 
-1. **Create `records/<slug>.html`** where `<slug>` is a short kebab-case version of the topic title (e.g. `transformer-attention`, `vector-databases`). The file must mirror `records/llm-embeddings.html` exactly in structure — change only the title, the date in the `<meta name="record-date">` and the hero `<time>` element (use today's date in `YYYY-MM-DD` and a human-friendly form like "May 3, 2026"), and the content of each section.
+1. **Create `records/data/<slug>.js`** where `<slug>` is short kebab-case (e.g. `transformer-attention`). The file assigns `window.RECORD_REGISTRY[<slug>] = { meta, intro, passages, vocabulary, rounds, summary }`. In each round's `mine` and `polished` strings, wrap the differing spans in `<mark>…</mark>` for the comparison highlights. Pending rounds use `{ number, prompt, status, statusHeading: 'Status' }` instead of mine/polished/corrections/level.
 
-2. **Insert one new card** at the top of the `.records-grid` in `index.html`, matching this template:
+2. **Append an entry** to `window.RECORDS_INDEX` in `records/manifest.js`:
 
-   ```html
-   <a class="record-card" href="records/<slug>.html">
-     <span class="date"><time datetime="YYYY-MM-DD">Month D, YYYY</time></span>
-     <h3 class="title">[Topic Title]</h3>
-     <p class="chinese">[Chinese title]</p>
-     <p class="summary">[1–2 sentence English summary]</p>
-     <div class="tags">
-       <span class="tag">[domain tag]</span>
-       <span class="tag">C1 / B2 / B1</span>
-       <span class="tag">3 practice rounds</span>
-     </div>
-     <span class="open-arrow">Open record →</span>
-   </a>
+   ```js
+   {
+     slug: '<slug>',
+     date: 'YYYY-MM-DD',
+     titleEn: '[Topic Title]',
+     titleZh: '[Chinese title]',
+     summary: '[1–2 sentence English summary]',
+     tags: ['[domain]', 'C1 / B2 / B1', '3 practice rounds'],
+     method: 'standard',
+   },
    ```
 
-Do not modify `assets/style.css` or any other existing record. Do not invent new section types — keep the five-section template intact.
+Do not modify `assets/style.css` or any other existing record. Keep the five-section template intact for standard records.
 
 ---
 
@@ -103,7 +113,7 @@ Six rows mapping a narrative function to the C1, B2, and B1 wording:
 
 ### SECTION 4 — Three Practice Rounds
 
-For each of three rounds, provide:
+For each round, provide:
 
 - **Round N prompt:** [the speaking/writing prompt]
 - **My response:** [my actual attempt, including the mistakes]
@@ -111,11 +121,11 @@ For each of three rounds, provide:
 - **Key corrections:** [bulleted list — each item names the issue type and shows `wrong` → `right`]
 - **Level:** [B2+ / C1 / C1+ etc.]
 
-In the polished and "my response" paragraphs, wrap the differing spans in `<mark>...</mark>` so the comparison highlights them, exactly as the LLM Embeddings example does.
+In the polished and "my response" strings, wrap the differing spans in `<mark>...</mark>` so the comparison highlights them, exactly as the existing examples do.
 
 ### SECTION 5 — Progress Summary
 
-Three bullet lines (one per round) and one closing italic note, matching the structure of the existing `<footer class="summary">` block.
+Three bullet lines (one per round) and one closing italic note. Each item: `{ round, levelPill, html }` for completed rounds, `{ round, html: '<em>Pending — …</em>' }` for pending ones.
 
 ---
 
@@ -131,7 +141,7 @@ A second learning mode, complementing the paragraph-based records: a timed three
 - **Round 3**: 3-minute prep (with structural hints — cut details, lead with the strongest point) → 40-second speech
 - **Capture**: write down your final speech and paste an AI-improved version side-by-side
 
-Open `espresso.html` to start a session. The page runs the timers, shows the hints at the right moments, and at the end lets you **download a record HTML file** that matches the existing record template.
+Open `espresso.html` to start a session. The page runs the timers, shows the hints at the right moments, and at the end lets you **download a record data file** that drops into `records/data/`.
 
 ### Topics
 
@@ -141,13 +151,23 @@ The topic list lives at `assets/espresso-topics.js`. Edit it directly — it's a
 
 After Round 3 you'll be prompted to capture your final speech and paste a polished rewrite. On the Done stage:
 
-1. Click **Download record HTML** — the file saves as `espresso-<slug>-<date>.html`.
-2. Move the file into `records/`.
-3. Add a matching `<a class="record-card">` block at the top of the grid in `index.html`, with a tag like `<span class="tag">Espresso · 60s/50s/40s</span>` to distinguish it from paragraph records.
+1. Click **Download record** — the file saves as `espresso-<slug>-<date>.js`.
+2. Move the file into `records/data/`.
+3. The download also includes a manifest snippet comment at the bottom — paste it into `records/manifest.js`.
+
+## Adding a new pet (a new species each month)
+
+Each pet is fully self-contained, so adding one next month is a small change:
+
+1. **Create `assets/pets/<species>.js`** that calls `window.PetRegistry.register('<species>', { displayName, historyTitle, historyIntroHtml, svg, stages, css })`. Use `assets/pets/cat.js` as the template — it's a full, working example. The `stages` array can have any length and any thresholds; CSS rules in `css` should be scoped with `.pet-container[data-species="<species>"]` so they never collide with other pets.
+2. **Register the species** by appending it to `window.PET_SPECIES` in `assets/pets/manifest.js`.
+3. **Assign it to a month** by adding an entry to `window.PET_SCHEDULE` in `assets/pet-schedule.js`, e.g. `'2026-06': 'dog'`.
+
+That's it — `index.html` will now show the new pet for that month, and `pet-history.html?species=<species>` will render its full stage gallery.
 
 ## Tips
 
-- **Slugs**: keep them short and lowercase, hyphen-separated. They become the filename and the URL — once chosen, don't rename without also updating the card link.
-- **Date order**: the listing is newest-first. Insert the new card at the top of the grid, not the bottom.
+- **Slugs**: keep them short and lowercase, hyphen-separated. They become the data filename and the `?slug=` URL parameter — once chosen, don't rename without also updating the manifest entry.
+- **Date order**: the listing is newest-first. The renderer sorts by date — you can append manifest entries in any order.
 - **Don't fork the styles**: every visual element on a record page already has a class in `assets/style.css`. If something looks unstyled, check that you used the right class — don't add a one-off `<style>` block.
 - **Print**: each record is print-friendly out of the box (the nav and back-to-top button are hidden, tabs expand, comparison stays side-by-side).

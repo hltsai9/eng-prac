@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Learning Record</title>
+<meta name="description" content="A single English learning record — passages, vocabulary, and practice rounds with feedback.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/record-renderer.js"></script>
+</head>
+<body>
+
+<main id="record-root"></main>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="19" x2="12" y2="5"></line>
+    <polyline points="5 12 12 5 19 12"></polyline>
+  </svg>
+</button>
+
+<script>
+  (function () {
+    const slug = new URLSearchParams(location.search).get('slug');
+    if (!slug) {
+      window.RecordRenderer.mountNotFound('', '#record-root');
+      return;
+    }
+    const s = document.createElement('script');
+    s.src = 'records/data/' + encodeURIComponent(slug) + '.js';
+    s.onload  = function () { window.RecordRenderer.mount(slug, '#record-root'); };
+    s.onerror = function () { window.RecordRenderer.mountNotFound(slug, '#record-root'); };
+    document.head.appendChild(s);
+  })();
+</script>
+
+</body>
+</html>
