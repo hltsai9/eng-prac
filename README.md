@@ -7,9 +7,11 @@ A small static site for keeping a personal collection of English learning record
 ```
 Eng-Prac/
 ├── index.html                  # Listing page — the cards of all records
+├── espresso.html               # Espresso-method live practice page
 ├── README.md                   # This file (with the prompt template)
 ├── assets/
-│   └── style.css               # Shared design system used by every page
+│   ├── style.css               # Shared design system used by every page
+│   └── espresso-topics.js      # Editable list of Espresso prompts
 └── records/
     └── llm-embeddings.html     # One record per file (the canonical example)
 ```
@@ -119,6 +121,29 @@ Three bullet lines (one per round) and one closing italic note, matching the str
 
 When you're done, briefly tell me which two files you changed.
 ````
+
+## The Espresso method (speaking practice)
+
+A second learning mode, complementing the paragraph-based records: a timed three-round speaking drill on a single topic, with the speech window shrinking each round to force distillation.
+
+- **Round 1**: 3-minute prep → 60-second speech
+- **Round 2**: 3-minute prep (with reflection hints — pauses / errors / omissions from R1) → 50-second speech
+- **Round 3**: 3-minute prep (with structural hints — cut details, lead with the strongest point) → 40-second speech
+- **Capture**: write down your final speech and paste an AI-improved version side-by-side
+
+Open `espresso.html` to start a session. The page runs the timers, shows the hints at the right moments, and at the end lets you **download a record HTML file** that matches the existing record template.
+
+### Topics
+
+The topic list lives at `assets/espresso-topics.js`. Edit it directly — it's a single JS array literal. Refresh `espresso.html` to pick up changes. You can also type a custom topic at the start of any session via the "Use my own" toggle.
+
+### Saving a session as a record
+
+After Round 3 you'll be prompted to capture your final speech and paste a polished rewrite. On the Done stage:
+
+1. Click **Download record HTML** — the file saves as `espresso-<slug>-<date>.html`.
+2. Move the file into `records/`.
+3. Add a matching `<a class="record-card">` block at the top of the grid in `index.html`, with a tag like `<span class="tag">Espresso · 60s/50s/40s</span>` to distinguish it from paragraph records.
 
 ## Tips
 

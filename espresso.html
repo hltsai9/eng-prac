@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espresso Method — Speaking Practice</title>
+<meta name="description" content="A timed three-round speaking drill. Same topic, shrinking windows: 60s → 50s → 40s. Distil your phrasing each pass.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<style>
+  /* Espresso-page-specific layout: stage flow + big timer */
+  .stage { max-width: 820px; margin: 0 auto 32px; padding: 0 24px; }
+
+  .timer-display {
+    font-family: var(--sans);
+    font-size: clamp(72px, 14vw, 144px);
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    color: var(--accent-strong);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    margin: 24px 0;
+  }
+  .timer-display.warning { color: var(--secondary); }
+  .timer-display.flash { animation: timer-flash 0.5s ease 3; }
+  @keyframes timer-flash {
+    0%, 100% { color: var(--accent-strong); }
+    50% { color: var(--secondary); }
+  }
+
+  .stage-meta {
+    text-align: center;
+    font-family: var(--sans);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 24px 0 4px;
+  }
+  .stage-meta strong { color: var(--accent); }
+
+  .topic-display {
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--accent-strong);
+    text-align: center;
+    margin: 24px 0;
+  }
+
+  .controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 18px 0;
+  }
+
+  .hints-card {
+    background: var(--accent-soft);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 20px 0;
+  }
+  .hints-card h3 {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--accent-strong);
+    margin: 0 0 10px;
+  }
+  .hints-card ul {
+    margin: 0;
+    padding-left: 20px;
+    font-family: var(--serif);
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+  .hints-card ul li { margin-bottom: 6px; }
+  .hints-card strong { color: var(--accent-strong); }
+
+  .notes-area {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg-card);
+    resize: vertical;
+    min-height: 200px;
+  }
+  .notes-area.tall { min-height: 320px; }
+  @media (max-width: 720px) {
+    .notes-area { min-height: 240px; font-size: 16px; }
+    .notes-area.tall { min-height: 360px; }
+  }
+  .notes-area:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  .notes-label {
+    display: block;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 18px 0 8px;
+  }
+
+  .recap-block { margin-bottom: 20px; }
+  .recap-block h4 {
+    font-family: var(--sans);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--secondary);
+    margin: 0 0 6px;
+  }
+  .recap-text {
+    font-family: var(--serif);
+    font-size: 15.5px;
+    line-height: 1.7;
+    color: var(--text);
+    white-space: pre-wrap;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 0;
+  }
+  .recap-text.empty { color: var(--text-muted); font-style: italic; }
+
+  .meta-foot {
+    text-align: center;
+    color: var(--text-muted);
+    font-family: var(--sans);
+    font-size: 13px;
+    margin-top: 18px;
+  }
+  .meta-foot code {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    background: var(--bg-soft);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--accent-strong);
+  }
+
+  /* Read-only prep-notes card shown during a speech stage */
+  .speech-notes {
+    max-width: 820px;
+    margin: 24px auto 0;
+    background: var(--bg-soft);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+  .speech-notes-label {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .speech-notes-text {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--text);
+    white-space: pre-wrap;
+    margin: 0;
+  }
+  .speech-notes-text.empty {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* On the recap page, .notes-area inside a .compare-col should read like
+     editable prose rather than a boxed input. */
+  .compare-col .notes-area {
+    background: transparent;
+    border: none;
+    padding: 0;
+    min-height: 110px;
+    font-size: 15.5px;
+    line-height: 1.75;
+  }
+  .compare-col .notes-area:focus {
+    box-shadow: none;
+    outline: 1px dashed var(--accent);
+    outline-offset: 4px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="nav-inner">
+    <a class="nav-brand" href="index.html">English Learning Records · <span>Espresso</span></a>
+    <div class="nav-links">
+      <a class="back" href="index.html">← All records</a>
+      <a href="index.html#records">Library</a>
+      <a href="pet-history.html">Pet history</a>
+      <a href="README.md">README</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <h1>The Espresso Method</h1>
+  <p class="subtitle">One topic. Three rounds. 60s → 50s → 40s. Distil your phrasing each pass.</p>
+</header>
+
+<main>
+
+<!-- STAGE: Topic -->
+<section class="stage" data-stage="topic">
+  <div class="section-label" style="text-align:center;">Step 01 — Topic</div>
+  <h2 style="text-align:center;">Pick a topic to speak about</h2>
+  <div class="card">
+    <p class="topic-display" id="topicDisplay">—</p>
+    <div class="controls">
+      <button class="btn" id="nextTopicBtn">Next topic</button>
+      <button class="btn ghost" id="customToggleBtn">Use my own</button>
+    </div>
+    <div id="customTopicWrap" hidden>
+      <label class="notes-label" for="customTopicInput">Your topic</label>
+      <textarea class="notes-area" id="customTopicInput" placeholder="Type the topic you'd like to practice." style="min-height: 70px;"></textarea>
+      <div class="controls" style="margin-top:12px;">
+        <button class="btn" id="applyCustomBtn">Use this topic</button>
+      </div>
+    </div>
+  </div>
+  <div class="controls" style="margin-top:24px;">
+    <button class="btn primary" id="startR1Btn">Start Round 1 →</button>
+  </div>
+</section>
+
+<!-- STAGE: R1 Prep -->
+<section class="stage" data-stage="r1-prep" hidden>
+  <div class="stage-meta"><strong>Round 1</strong> · Prep (3 minutes)</div>
+  <h2 style="text-align:center;">Get ready to speak for 60 seconds</h2>
+  <p class="topic-display">—</p>
+  <div class="timer-display" data-timer="r1-prep">3:00</div>
+  <div class="controls">
+    <button class="btn" data-pause>Pause</button>
+    <button class="btn" data-skip>Skip to speech →</button>
+  </div>
+  <label class="notes-label" for="r1PrepNotes">Prep notes — points you'll cover</label>
+  <textarea class="notes-area tall" id="r1PrepNotes" placeholder="Jot the structure: opening line, two or three beats, a closer."></textarea>
+</section>
+
+<!-- STAGE: R1 Speech -->
+<section class="stage" data-stage="r1-speech" hidden>
+  <div class="stage-meta"><strong>Round 1</strong> · Speak (60 seconds)</div>
+  <p class="topic-display">—</p>
+  <div class="timer-display" data-timer="r1-speech">1:00</div>
+  <div class="controls">
+    <button class="btn" data-pause>Pause</button>
+    <button class="btn" data-skip>Done speaking →</button>
+  </div>
+  <div class="speech-notes" data-speech-notes="r1">
+    <div class="speech-notes-label">Your prep notes</div>
+    <p class="speech-notes-text">—</p>
+  </div>
+</section>
+
+<!-- STAGE: R2 Prep -->
+<section class="stage" data-stage="r2-prep" hidden>
+  <div class="stage-meta"><strong>Round 2</strong> · Prep (3 minutes)</div>
+  <h2 style="text-align:center;">Reflect, then prep for 50 seconds</h2>
+  <p class="topic-display">—</p>
+  <div class="timer-display" data-timer="r2-prep">3:00</div>
+  <div class="controls">
+    <button class="btn" data-pause>Pause</button>
+    <button class="btn" data-skip>Skip to speech →</button>
+  </div>
+  <div class="hints-card">
+    <h3>Reflect on Round 1</h3>
+    <ul>
+      <li><strong>What made you pause?</strong> Words you reached for and missed, sentence starts you abandoned.</li>
+      <li><strong>What did you say wrong?</strong> Verb tense, article, collocation, pronunciation that you noticed mid-sentence.</li>
+      <li><strong>What did you miss?</strong> Points you meant to cover but ran out of time or forgot.</li>
+    </ul>
+  </div>
+  <div class="speech-notes" data-prev-notes="r1">
+    <div class="speech-notes-label">Round 1 prep notes</div>
+    <p class="speech-notes-text">—</p>
+  </div>
+  <label class="notes-label" for="r2PrepNotes">Notes — reflection + plan for Round 2</label>
+  <textarea class="notes-area tall" id="r2PrepNotes" placeholder="Capture the reflection, then sketch the tighter Round 2 version."></textarea>
+</section>
+
+<!-- STAGE: R2 Speech -->
+<section class="stage" data-stage="r2-speech" hidden>
+  <div class="stage-meta"><strong>Round 2</strong> · Speak (50 seconds)</div>
+  <p class="topic-display">—</p>
+  <div class="timer-display" data-timer="r2-speech">0:50</div>
+  <div class="controls">
+    <button class="btn" data-pause>Pause</button>
+    <button class="btn" data-skip>Done speaking →</button>
+  </div>
+  <div class="speech-notes" data-speech-notes="r2">
+    <div class="speech-notes-label">Your prep notes</div>
+    <p class="speech-notes-text">—</p>
+  </div>
+</section>
+
+<!-- STAGE: R3 Prep -->
+<section class="stage" data-stage="r3-prep" hidden>
+  <div class="stage-meta"><strong>Round 3</strong> · Prep (3 minutes)</div>
+  <h2 style="text-align:center;">Tighten the speech to 40 seconds</h2>
+  <p class="topic-display">—</p>
+  <div class="timer-display" data-timer="r3-prep">3:00</div>
+  <div class="controls">
+    <button class="btn" data-pause>Pause</button>
+    <button class="btn" data-skip>Skip to speech →</button>
+  </div>
+  <div class="hints-card">
+    <h3>Tighten the structure</h3>
+    <ul>
+      <li><strong>Cut unimportant details.</strong> Every example you keep should earn its place.</li>
+      <li><strong>Adjust the structure.</strong> Lead with the strongest point — don't bury the lede.</li>
+      <li><strong>Land the closer.</strong> A short, punchy sentence beats a trailing one.</li>
+    </ul>
+  </div>
+  <div class="speech-notes" data-prev-notes="r2">
+    <div class="speech-notes-label">Round 2 prep notes</div>
+    <p class="speech-notes-text">—</p>
+  </div>
+  <label class="notes-label" for="r3PrepNotes">Notes — what to cut, restructure, sharpen</label>
+  <textarea class="notes-area tall" id="r3PrepNotes" placeholder="List the cuts and the new running order."></textarea>
+</section>
+
+<!-- STAGE: R3 Speech -->
+<section class="stage" data-stage="r3-speech" hidden>
+  <div class="stage-meta"><strong>Round 3</strong> · Speak (40 seconds)</div>
+  <p class="topic-display">—</p>
+  <div class="timer-display" data-timer="r3-speech">0:40</div>
+  <div class="controls">
+    <button class="btn" data-pause>Pause</button>
+    <button class="btn" data-skip>Done speaking →</button>
+  </div>
+  <div class="speech-notes" data-speech-notes="r3">
+    <div class="speech-notes-label">Your prep notes</div>
+    <p class="speech-notes-text">—</p>
+  </div>
+</section>
+
+<!-- STAGE: Capture -->
+<section class="stage" data-stage="capture" hidden>
+  <div class="stage-meta"><strong>Capture</strong> · Lock in the final speech</div>
+  <h2 style="text-align:center;">Write down what you said</h2>
+  <p class="topic-display">—</p>
+  <label class="notes-label" for="finalSpeechInput">My final speech (Round 3)</label>
+  <textarea class="notes-area tall" id="finalSpeechInput" placeholder="Transcribe what you actually said in Round 3 — best effort."></textarea>
+  <label class="notes-label" for="polishedSpeechInput">AI-improved version</label>
+  <textarea class="notes-area tall" id="polishedSpeechInput" placeholder="Paste a polished rewrite from your AI assistant of choice."></textarea>
+  <div class="controls" style="margin-top:20px;">
+    <button class="btn primary" id="toDoneBtn">Save &amp; continue →</button>
+  </div>
+</section>
+
+<!-- STAGE: Done -->
+<section class="stage" data-stage="done" hidden>
+  <div class="section-label" style="text-align:center;">Session complete</div>
+  <h2 style="text-align:center;">Espresso session — recap</h2>
+
+  <div class="card">
+    <div class="recap-block">
+      <h4>Topic</h4>
+      <p class="recap-text" id="recapTopic">—</p>
+    </div>
+    <div class="recap-block">
+      <h4>Round 1 prep notes — 0:60 speech</h4>
+      <textarea class="notes-area" id="recapR1Input" placeholder="Round 1 prep notes — type or transcribe here."></textarea>
+    </div>
+    <div class="recap-block">
+      <h4>Round 2 prep notes — reflection on R1 + 0:50 speech</h4>
+      <textarea class="notes-area" id="recapR2Input" placeholder="Round 2 prep notes (incl. reflection on R1) — type or transcribe here."></textarea>
+    </div>
+    <div class="recap-block">
+      <h4>Round 3 prep notes — structural pass + 0:40 speech</h4>
+      <textarea class="notes-area" id="recapR3Input" placeholder="Round 3 prep notes (structural pass) — type or transcribe here."></textarea>
+    </div>
+
+    <h4 style="font-family: var(--sans); font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--secondary); margin: 0 0 10px;">Final speech &amp; polished version</h4>
+    <div class="compare">
+      <div class="compare-col mine">
+        <div class="compare-label">My Final Speech</div>
+        <textarea class="notes-area" id="recapFinalInput" placeholder="Edit your final speech transcript here."></textarea>
+      </div>
+      <div class="compare-col polished">
+        <div class="compare-label">AI-Improved Version</div>
+        <textarea class="notes-area" id="recapPolishedInput" placeholder="Edit the AI-improved version here."></textarea>
+      </div>
+    </div>
+
+    <label class="notes-label" for="closingNotesInput">Closing reflection — one or two sentences for the record</label>
+    <textarea class="notes-area" id="closingNotesInput" placeholder="What's the takeaway from this espresso pass?"></textarea>
+  </div>
+
+  <div class="controls" style="margin-top:24px;">
+    <button class="btn primary" id="downloadBtn">Download record HTML</button>
+    <button class="btn" id="copyBtn">Copy markup</button>
+    <button class="btn ghost" id="restartBtn">Start a new session</button>
+  </div>
+  <p class="meta-foot">
+    Drop the downloaded file into <code>records/</code> and add a card to <code>index.html</code> — same flow as paragraph records.
+  </p>
+</section>
+
+</main>
+
+<button class="back-to-top" id="backToTop" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="19" x2="12" y2="5"></line>
+    <polyline points="5 12 12 5 19 12"></polyline>
+  </svg>
+</button>
+
+<script src="assets/espresso-topics.js"></script>
+<script>
+  const STAGES = ['topic','r1-prep','r1-speech','r2-prep','r2-speech','r3-prep','r3-speech','capture','done'];
+  const DURATIONS = {
+    'r1-prep': 180,
+    'r1-speech': 60,
+    'r2-prep': 180,
+    'r2-speech': 50,
+    'r3-prep': 180,
+    'r3-speech': 40,
+  };
+
+  const session = {
+    topic: '',
+    r1PrepNotes: '',
+    r2PrepNotes: '',
+    r3PrepNotes: '',
+    finalSpeech: '',
+    polishedSpeech: '',
+    closingNotes: '',
+    startedAt: null,
+  };
+
+  // ----- Topics -----
+  const topics = (Array.isArray(window.ESPRESSO_TOPICS) && window.ESPRESSO_TOPICS.length)
+    ? window.ESPRESSO_TOPICS.slice()
+    : ['Describe a recent meal that surprised you.'];
+  let topicIndex = Math.floor(Math.random() * topics.length);
+
+  function setTopic(t) {
+    session.topic = t;
+    document.querySelectorAll('.topic-display').forEach(el => { el.textContent = t; });
+  }
+  setTopic(topics[topicIndex]);
+
+  document.getElementById('nextTopicBtn').addEventListener('click', () => {
+    topicIndex = (topicIndex + 1) % topics.length;
+    setTopic(topics[topicIndex]);
+  });
+
+  const customWrap = document.getElementById('customTopicWrap');
+  const customInput = document.getElementById('customTopicInput');
+  document.getElementById('customToggleBtn').addEventListener('click', () => {
+    customWrap.hidden = !customWrap.hidden;
+    if (!customWrap.hidden) customInput.focus();
+  });
+  document.getElementById('applyCustomBtn').addEventListener('click', () => {
+    const t = customInput.value.trim();
+    if (t) {
+      setTopic(t);
+      customWrap.hidden = true;
+    }
+  });
+
+  // ----- Stage flow -----
+  function showStage(name) {
+    document.querySelectorAll('.stage').forEach(s => {
+      s.hidden = (s.dataset.stage !== name);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (name === 'r1-speech' || name === 'r2-speech' || name === 'r3-speech') {
+      const round = name.slice(0, 2);
+      populateRefNotes(round, '.speech-notes[data-speech-notes="' + round + '"] .speech-notes-text', '(no prep notes — speak from memory)');
+    }
+    if (name === 'r2-prep') {
+      populateRefNotes('r1', '.speech-notes[data-prev-notes="r1"] .speech-notes-text', '(no Round 1 notes captured)');
+    }
+    if (name === 'r3-prep') {
+      populateRefNotes('r2', '.speech-notes[data-prev-notes="r2"] .speech-notes-text', '(no Round 2 notes captured)');
+    }
+    if (DURATIONS[name] !== undefined) startTimer(name);
+    if (name === 'done') buildRecap();
+  }
+
+  // Mirror a round's prep textarea into a read-only reference card.
+  function populateRefNotes(round, selector, emptyMsg) {
+    const target = document.querySelector(selector);
+    if (!target) return;
+    const prepEl = document.getElementById(round + 'PrepNotes');
+    const raw = prepEl ? prepEl.value : (session[round + 'PrepNotes'] || '');
+    const value = (raw || '').trim();
+    if (value) {
+      target.textContent = value;
+      target.classList.remove('empty');
+    } else {
+      target.textContent = emptyMsg;
+      target.classList.add('empty');
+    }
+  }
+
+  // ----- Timer -----
+  const timer = { interval: null, stage: null, remaining: 0, paused: false };
+
+  function fmt(secs) {
+    secs = Math.max(0, secs);
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return m + ':' + s.toString().padStart(2, '0');
+  }
+
+  function clearTimer() {
+    if (timer.interval) clearInterval(timer.interval);
+    timer.interval = null;
+  }
+
+  function startTimer(stage) {
+    clearTimer();
+    timer.stage = stage;
+    timer.remaining = DURATIONS[stage];
+    timer.paused = false;
+    const display = document.querySelector('.timer-display[data-timer="' + stage + '"]');
+    if (!display) return;
+    display.textContent = fmt(timer.remaining);
+    display.classList.remove('warning', 'flash');
+
+    timer.interval = setInterval(() => {
+      if (timer.paused) return;
+      timer.remaining -= 1;
+      display.textContent = fmt(timer.remaining);
+      if (timer.remaining <= 10) display.classList.add('warning');
+      if (timer.remaining <= 0) {
+        clearTimer();
+        display.classList.add('flash');
+        beep();
+        autoAdvance(stage);
+      }
+    }, 1000);
+
+    const section = document.querySelector('.stage[data-stage="' + stage + '"]');
+    const pauseBtn = section.querySelector('[data-pause]');
+    const skipBtn = section.querySelector('[data-skip]');
+    if (pauseBtn) {
+      pauseBtn.textContent = 'Pause';
+      pauseBtn.onclick = () => {
+        timer.paused = !timer.paused;
+        pauseBtn.textContent = timer.paused ? 'Resume' : 'Pause';
+      };
+    }
+    if (skipBtn) {
+      skipBtn.onclick = () => {
+        clearTimer();
+        autoAdvance(stage);
+      };
+    }
+  }
+
+  function autoAdvance(stage) {
+    saveNotes();
+    const idx = STAGES.indexOf(stage);
+    const next = STAGES[idx + 1];
+    if (next) showStage(next);
+  }
+
+  function saveNotes() {
+    const r1 = document.getElementById('r1PrepNotes');
+    const r2 = document.getElementById('r2PrepNotes');
+    const r3 = document.getElementById('r3PrepNotes');
+    if (r1) session.r1PrepNotes = r1.value;
+    if (r2) session.r2PrepNotes = r2.value;
+    if (r3) session.r3PrepNotes = r3.value;
+  }
+
+  // ----- End-of-stage beep (WebAudio, no asset needed) -----
+  let audioCtx = null;
+  function beep() {
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.frequency.value = 660;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.25, audioCtx.currentTime + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.6);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.65);
+    } catch (e) { /* audio may be blocked; skip silently */ }
+  }
+
+  // ----- Flow buttons -----
+  document.getElementById('startR1Btn').addEventListener('click', () => {
+    if (!session.topic) return;
+    session.startedAt = new Date().toISOString();
+    showStage('r1-prep');
+  });
+
+  document.getElementById('toDoneBtn').addEventListener('click', () => {
+    session.finalSpeech = document.getElementById('finalSpeechInput').value;
+    session.polishedSpeech = document.getElementById('polishedSpeechInput').value;
+    showStage('done');
+  });
+
+  document.getElementById('restartBtn').addEventListener('click', () => {
+    if (confirm('Start a new session? Unsaved notes will be lost.')) {
+      location.reload();
+    }
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click', () => {
+    readRecapInputs();
+    downloadRecord();
+  });
+
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    readRecapInputs();
+    const html = buildRecordHtml();
+    try {
+      await navigator.clipboard.writeText(html);
+      const btn = document.getElementById('copyBtn');
+      const orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = orig; }, 1500);
+    } catch (e) {
+      alert('Copy failed — try the Download button instead.');
+    }
+  });
+
+  // ----- Recap on Done -----
+  function buildRecap() {
+    document.getElementById('recapTopic').textContent = session.topic || '—';
+    document.getElementById('recapR1Input').value = session.r1PrepNotes || '';
+    document.getElementById('recapR2Input').value = session.r2PrepNotes || '';
+    document.getElementById('recapR3Input').value = session.r3PrepNotes || '';
+    document.getElementById('recapFinalInput').value = session.finalSpeech || '';
+    document.getElementById('recapPolishedInput').value = session.polishedSpeech || '';
+  }
+
+  // Sync user edits on the recap page back into the session before export.
+  function readRecapInputs() {
+    session.r1PrepNotes = document.getElementById('recapR1Input').value;
+    session.r2PrepNotes = document.getElementById('recapR2Input').value;
+    session.r3PrepNotes = document.getElementById('recapR3Input').value;
+    session.finalSpeech = document.getElementById('recapFinalInput').value;
+    session.polishedSpeech = document.getElementById('recapPolishedInput').value;
+    session.closingNotes = document.getElementById('closingNotesInput').value;
+  }
+
+  // ----- Record HTML build / download -----
+  function slugify(s) {
+    return (s || '').toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 50);
+  }
+  function escapeHtml(s) {
+    return (s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+  function paragraphs(s) {
+    const text = (s || '').trim();
+    if (!text) return '<p style="color: var(--text-muted); font-style: italic; margin:0;">(no notes captured)</p>';
+    return text
+      .split(/\n{2,}/)
+      .map(p => '<p>' + escapeHtml(p).replace(/\n/g, '<br>') + '</p>')
+      .join('\n      ');
+  }
+  function todayIso() {
+    return new Date().toISOString().slice(0, 10);
+  }
+  function todayHuman() {
+    return new Date().toLocaleString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  }
+
+  function buildRecordHtml() {
+    const topic = session.topic || 'Espresso Session';
+    const isoDate = todayIso();
+    const humanDate = todayHuman();
+    const finalSpeech = escapeHtml(session.finalSpeech).replace(/\n/g, '<br>') || '(transcript not captured)';
+    const polished = escapeHtml(session.polishedSpeech).replace(/\n/g, '<br>') || '(polished version not captured)';
+    const closing = (session.closingNotes || '').trim();
+    const closingHtml = closing
+      ? '<p class="summary-note">"' + escapeHtml(closing) + '"</p>'
+      : '<p class="summary-note">"Espresso pass complete — three rounds, shrinking windows."</p>';
+
+    return '<!DOCTYPE html>\n'
+      + '<html lang="en">\n'
+      + '<head>\n'
+      + '<meta charset="UTF-8">\n'
+      + '<meta name="viewport" content="width=device-width, initial-scale=1.0">\n'
+      + '<title>' + escapeHtml(topic) + ' — Espresso Session</title>\n'
+      + '<meta name="description" content="An Espresso-method speaking session: three timed rounds (60s → 50s → 40s) with prep notes and a polished rewrite.">\n'
+      + '<meta name="record-date" content="' + isoDate + '">\n'
+      + '<meta name="record-method" content="espresso">\n'
+      + '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
+      + '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+      + '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">\n'
+      + '<link rel="stylesheet" href="../assets/style.css">\n'
+      + '</head>\n'
+      + '<body>\n\n'
+      + '<nav class="topnav">\n'
+      + '  <div class="nav-inner">\n'
+      + '    <a class="nav-brand" href="../index.html">English Learning Record · <span>' + escapeHtml(topic) + '</span></a>\n'
+      + '    <div class="nav-links">\n'
+      + '      <a class="back" href="../index.html">← All records</a>\n'
+      + '      <a href="../espresso.html">Espresso method</a>\n'
+      + '      <a href="#topic">Topic</a>\n'
+      + '      <a href="#rounds">Rounds</a>\n'
+      + '      <a href="#compare">Final speech</a>\n'
+      + '      <a href="#summary">Summary</a>\n'
+      + '    </div>\n'
+      + '  </div>\n'
+      + '</nav>\n\n'
+      + '<header class="hero">\n'
+      + '  <h1>' + escapeHtml(topic) + '</h1>\n'
+      + '  <p class="subtitle">Espresso method · three timed rounds · 60s → 50s → 40s</p>\n'
+      + '  <p class="meta">Created on <time datetime="' + isoDate + '">' + humanDate + '</time></p>\n'
+      + '</header>\n\n'
+      + '<section id="topic">\n'
+      + '  <div class="section-label">Section 01</div>\n'
+      + '  <h2>Topic</h2>\n'
+      + '  <article class="card prose">\n'
+      + '    <p>' + escapeHtml(topic) + '</p>\n'
+      + '  </article>\n'
+      + '</section>\n\n'
+      + '<section id="rounds">\n'
+      + '  <div class="section-label">Section 02</div>\n'
+      + '  <h2>Round-by-Round Notes</h2>\n\n'
+      + '  <article class="round">\n'
+      + '    <div class="round-header">\n'
+      + '      <span class="round-number">Round 1</span>\n'
+      + '      <span class="badge c1">0:60 speech</span>\n'
+      + '    </div>\n'
+      + '    <div class="round-prompt">\n'
+      + '      <strong>Prep window</strong>\n'
+      + '      3 minutes to organize the speech, then 60 seconds to deliver it cold.\n'
+      + '    </div>\n'
+      + '    <div class="corrections">\n'
+      + '      <h4>Prep notes</h4>\n'
+      + '      ' + paragraphs(session.r1PrepNotes) + '\n'
+      + '    </div>\n'
+      + '  </article>\n\n'
+      + '  <article class="round">\n'
+      + '    <div class="round-header">\n'
+      + '      <span class="round-number">Round 2</span>\n'
+      + '      <span class="badge c1">0:50 speech</span>\n'
+      + '    </div>\n'
+      + '    <div class="round-prompt">\n'
+      + '      <strong>During prep — reflection on Round 1</strong>\n'
+      + '      What made me pause · what I said wrong · what I missed. Tighten and re-attempt in 50 seconds.\n'
+      + '    </div>\n'
+      + '    <div class="corrections">\n'
+      + '      <h4>Prep notes &amp; reflection</h4>\n'
+      + '      ' + paragraphs(session.r2PrepNotes) + '\n'
+      + '    </div>\n'
+      + '  </article>\n\n'
+      + '  <article class="round">\n'
+      + '    <div class="round-header">\n'
+      + '      <span class="round-number">Round 3</span>\n'
+      + '      <span class="badge c1plus">0:40 speech</span>\n'
+      + '    </div>\n'
+      + '    <div class="round-prompt">\n'
+      + '      <strong>During prep — structural pass</strong>\n'
+      + '      Cut unimportant details, adjust the structure, land a punchier closer. Final attempt in 40 seconds.\n'
+      + '    </div>\n'
+      + '    <div class="corrections">\n'
+      + '      <h4>Structural prep notes</h4>\n'
+      + '      ' + paragraphs(session.r3PrepNotes) + '\n'
+      + '    </div>\n'
+      + '  </article>\n'
+      + '</section>\n\n'
+      + '<section id="compare">\n'
+      + '  <div class="section-label">Section 03</div>\n'
+      + '  <h2>Final Speech vs. AI-Improved Version</h2>\n'
+      + '  <div class="round">\n'
+      + '    <div class="compare">\n'
+      + '      <div class="compare-col mine">\n'
+      + '        <div class="compare-label">My Final Speech (Round 3)</div>\n'
+      + '        <p class="compare-text">' + finalSpeech + '</p>\n'
+      + '      </div>\n'
+      + '      <div class="compare-col polished">\n'
+      + '        <div class="compare-label">AI-Improved Version</div>\n'
+      + '        <p class="compare-text">' + polished + '</p>\n'
+      + '      </div>\n'
+      + '    </div>\n'
+      + '  </div>\n'
+      + '</section>\n\n'
+      + '<footer class="summary" id="summary">\n'
+      + '  <div class="summary-card">\n'
+      + '    <div class="section-label">Session Summary</div>\n'
+      + '    <h2>Espresso Pass — Three Rounds</h2>\n'
+      + '    <ul class="summary-list">\n'
+      + '      <li><span class="round-tag">Round 1</span><span><span class="level-pill">0:60</span>Cold-open delivery after a 3-minute prep window.</span></li>\n'
+      + '      <li><span class="round-tag">Round 2</span><span><span class="level-pill">0:50</span>Reflected on R1 pauses / errors / omissions during prep, then re-delivered in a tighter window.</span></li>\n'
+      + '      <li><span class="round-tag">Round 3</span><span><span class="level-pill">0:40</span>Structural pass — cut details, reordered, landed the close. Final speech captured.</span></li>\n'
+      + '    </ul>\n'
+      + '    ' + closingHtml + '\n'
+      + '  </div>\n'
+      + '</footer>\n\n'
+      + '<button class="back-to-top" id="backToTop" aria-label="Back to top">\n'
+      + '  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">\n'
+      + '    <line x1="12" y1="19" x2="12" y2="5"></line>\n'
+      + '    <polyline points="5 12 12 5 19 12"></polyline>\n'
+      + '  </svg>\n'
+      + '</button>\n\n'
+      + '<script>\n'
+      + '  const backBtn = document.getElementById("backToTop");\n'
+      + '  window.addEventListener("scroll", () => {\n'
+      + '    backBtn.classList.toggle("visible", window.scrollY > 400);\n'
+      + '  });\n'
+      + '  backBtn.addEventListener("click", () => {\n'
+      + '    window.scrollTo({ top: 0, behavior: "smooth" });\n'
+      + '  });\n'
+      + '<\/script>\n\n'
+      + '</body>\n'
+      + '</html>\n';
+  }
+
+  function downloadRecord() {
+    const html = buildRecordHtml();
+    const topic = session.topic || 'session';
+    const slug = 'espresso-' + (slugify(topic) || 'session') + '-' + todayIso();
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = slug + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // ----- Back to top -----
+  const backBtn = document.getElementById('backToTop');
+  window.addEventListener('scroll', () => {
+    backBtn.classList.toggle('visible', window.scrollY > 400);
+  });
+  backBtn.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
