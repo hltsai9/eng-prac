@@ -90,15 +90,20 @@
     width: 100%;
     box-sizing: border-box;
     font-family: var(--serif);
-    font-size: 15.5px;
+    font-size: 16px;
     line-height: 1.6;
     color: var(--text);
-    padding: 14px 16px;
+    padding: 16px 18px;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--bg-card);
     resize: vertical;
-    min-height: 110px;
+    min-height: 200px;
+  }
+  .notes-area.tall { min-height: 320px; }
+  @media (max-width: 720px) {
+    .notes-area { min-height: 240px; font-size: 16px; }
+    .notes-area.tall { min-height: 360px; }
   }
   .notes-area:focus {
     outline: none;
@@ -257,7 +262,7 @@
     <button class="btn" data-skip>Skip to speech →</button>
   </div>
   <label class="notes-label" for="r1PrepNotes">Prep notes — points you'll cover</label>
-  <textarea class="notes-area" id="r1PrepNotes" placeholder="Jot the structure: opening line, two or three beats, a closer."></textarea>
+  <textarea class="notes-area tall" id="r1PrepNotes" placeholder="Jot the structure: opening line, two or three beats, a closer."></textarea>
 </section>
 
 <!-- STAGE: R1 Speech -->
@@ -293,8 +298,12 @@
       <li><strong>What did you miss?</strong> Points you meant to cover but ran out of time or forgot.</li>
     </ul>
   </div>
+  <div class="speech-notes" data-prev-notes="r1">
+    <div class="speech-notes-label">Round 1 prep notes</div>
+    <p class="speech-notes-text">—</p>
+  </div>
   <label class="notes-label" for="r2PrepNotes">Notes — reflection + plan for Round 2</label>
-  <textarea class="notes-area" id="r2PrepNotes" placeholder="Capture the reflection, then sketch the tighter Round 2 version."></textarea>
+  <textarea class="notes-area tall" id="r2PrepNotes" placeholder="Capture the reflection, then sketch the tighter Round 2 version."></textarea>
 </section>
 
 <!-- STAGE: R2 Speech -->
@@ -330,8 +339,12 @@
       <li><strong>Land the closer.</strong> A short, punchy sentence beats a trailing one.</li>
     </ul>
   </div>
+  <div class="speech-notes" data-prev-notes="r2">
+    <div class="speech-notes-label">Round 2 prep notes</div>
+    <p class="speech-notes-text">—</p>
+  </div>
   <label class="notes-label" for="r3PrepNotes">Notes — what to cut, restructure, sharpen</label>
-  <textarea class="notes-area" id="r3PrepNotes" placeholder="List the cuts and the new running order."></textarea>
+  <textarea class="notes-area tall" id="r3PrepNotes" placeholder="List the cuts and the new running order."></textarea>
 </section>
 
 <!-- STAGE: R3 Speech -->
@@ -355,9 +368,9 @@
   <h2 style="text-align:center;">Write down what you said</h2>
   <p class="topic-display">—</p>
   <label class="notes-label" for="finalSpeechInput">My final speech (Round 3)</label>
-  <textarea class="notes-area" id="finalSpeechInput" placeholder="Transcribe what you actually said in Round 3 — best effort." style="min-height: 160px;"></textarea>
+  <textarea class="notes-area tall" id="finalSpeechInput" placeholder="Transcribe what you actually said in Round 3 — best effort."></textarea>
   <label class="notes-label" for="polishedSpeechInput">AI-improved version</label>
-  <textarea class="notes-area" id="polishedSpeechInput" placeholder="Paste a polished rewrite from your AI assistant of choice." style="min-height: 160px;"></textarea>
+  <textarea class="notes-area tall" id="polishedSpeechInput" placeholder="Paste a polished rewrite from your AI assistant of choice."></textarea>
   <div class="controls" style="margin-top:20px;">
     <button class="btn primary" id="toDoneBtn">Save &amp; continue →</button>
   </div>
@@ -482,26 +495,31 @@
     });
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (name === 'r1-speech' || name === 'r2-speech' || name === 'r3-speech') {
-      populateSpeechNotes(name);
+      const round = name.slice(0, 2);
+      populateRefNotes(round, '.speech-notes[data-speech-notes="' + round + '"] .speech-notes-text', '(no prep notes — speak from memory)');
+    }
+    if (name === 'r2-prep') {
+      populateRefNotes('r1', '.speech-notes[data-prev-notes="r1"] .speech-notes-text', '(no Round 1 notes captured)');
+    }
+    if (name === 'r3-prep') {
+      populateRefNotes('r2', '.speech-notes[data-prev-notes="r2"] .speech-notes-text', '(no Round 2 notes captured)');
     }
     if (DURATIONS[name] !== undefined) startTimer(name);
     if (name === 'done') buildRecap();
   }
 
-  // Mirror the prior round's prep textarea into the speech stage's read-only card.
-  function populateSpeechNotes(speechStage) {
-    const round = speechStage.slice(0, 2); // 'r1' | 'r2' | 'r3'
-    const prepId = round + 'PrepNotes';
-    const target = document.querySelector('.speech-notes[data-speech-notes="' + round + '"] .speech-notes-text');
+  // Mirror a round's prep textarea into a read-only reference card.
+  function populateRefNotes(round, selector, emptyMsg) {
+    const target = document.querySelector(selector);
     if (!target) return;
-    const prepEl = document.getElementById(prepId);
+    const prepEl = document.getElementById(round + 'PrepNotes');
     const raw = prepEl ? prepEl.value : (session[round + 'PrepNotes'] || '');
     const value = (raw || '').trim();
     if (value) {
       target.textContent = value;
       target.classList.remove('empty');
     } else {
-      target.textContent = '(no prep notes — speak from memory)';
+      target.textContent = emptyMsg;
       target.classList.add('empty');
     }
   }
